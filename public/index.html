@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MultiverseOps - Dynamic Enterprise Agentic AI Engine</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Navbar Header -->
+    <header class="navbar">
+      <div class="brand-title">
+        <span>🌌</span> MultiverseOps Engine
+      </div>
+      <div class="pill-badge">Google Gemini 2.5 LLM + Model Context Protocol (MCP)</div>
+    </header>
+
+    <!-- Top Command Input -->
+    <div class="panel" style="margin-bottom: 24px;">
+      <div class="panel-title">⚡ Ask Any Enterprise Question or Issue</div>
+      <div class="prompt-box">
+        <input type="text" id="promptInput" class="input-field" 
+               value="How do I secure S3 bucket permissions against data leaks and GDPR violations?" 
+               placeholder="Type any enterprise question or request here...">
+        <button class="btn-execute" onclick="executeAgent()">Execute 30-Universe Speculation</button>
+      </div>
+      
+      <!-- Direct LLM Solution Box -->
+      <div id="directAnswerBox" style="margin-top: 15px;">
+        <p style="color: var(--text-muted); font-size: 14px;">Type any prompt above and click Execute to see Gemini LLM synthesize a direct architectural solution.</p>
+      </div>
+    </div>
+
+    <!-- Main Grid Dashboard -->
+    <div class="app-grid">
+      <!-- Left Panel: 30-Universe Speculation Matrix -->
+      <div class="panel">
+        <div class="panel-title">
+          <span>🌀</span> 30-Universe Parallel Speculation Matrix
+        </div>
+        <div id="universeGrid" class="universe-matrix-grid">
+          <!-- 30 Cards loaded via JS -->
+        </div>
+      </div>
+
+      <!-- Right Panel: Agentic Thought Stream & Self-Healing Code -->
+      <div class="panel">
+        <div class="panel-title">
+          <span>🧠</span> Agentic Reasoning & Remediated Production Code
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <h4 style="color: var(--text-muted); font-size: 13px; margin-bottom: 8px;">LIVE AGENT THOUGHT STREAM:</h4>
+          <div id="thoughtConsole" class="thought-console">
+            <div class="thought-entry">
+              <span class="thought-step">[IDLE]</span> Gemini LLM Agentic SDK initialized and ready. Type a prompt above.
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h4 style="color: var(--text-muted); font-size: 13px; margin-bottom: 8px;">TAILORED PRODUCTION CODE SCRIPT:</h4>
+          <pre id="codeDiffBox" class="code-diff-box">// Custom production code tailored to your prompt will be generated here...</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

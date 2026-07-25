@@ -1,0 +1,204 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Outfit:wght@300;400;600;700;800&display=swap');
+
+:root {
+  --bg-dark: #07090e;
+  --panel-bg: rgba(18, 24, 38, 0.75);
+  --border-color: rgba(56, 189, 248, 0.2);
+  --accent-cyan: #38bdf8;
+  --accent-purple: #c084fc;
+  --accent-green: #4ade80;
+  --accent-red: #f87171;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg-dark);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(192, 132, 252, 0.12) 0px, transparent 50%);
+  color: var(--text-main);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Header Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--panel-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 20px 30px;
+  margin-bottom: 24px;
+}
+
+.brand-title {
+  font-size: 26px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pill-badge {
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid var(--accent-cyan);
+  color: var(--accent-cyan);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Main Grid Layout */
+.app-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 1024px) {
+  .app-grid { grid-template-columns: 1fr; }
+}
+
+.panel {
+  background: var(--panel-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.panel-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--accent-cyan);
+}
+
+/* Prompt Box Input */
+.prompt-box {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.input-field {
+  flex: 1;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 10px;
+  padding: 14px 18px;
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.input-field:focus {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+}
+
+.btn-execute {
+  background: linear-gradient(135deg, #0284c7, #7c3aed);
+  border: none;
+  color: white;
+  font-weight: 700;
+  padding: 14px 28px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.btn-execute:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+}
+
+/* 30-Universe Grid Cards */
+.universe-matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+.u-card {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.u-card.pass { border-left: 4px solid var(--accent-green); }
+.u-card.fail { border-left: 4px solid var(--accent-red); background: rgba(248, 113, 113, 0.1); }
+
+.u-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.u-name { color: var(--text-muted); font-size: 11px; }
+
+/* Thought Stream Terminal Console */
+.thought-console {
+  background: #020617;
+  border: 1px solid #1e293b;
+  border-radius: 10px;
+  padding: 16px;
+  font-family: 'Fira Code', monospace;
+  font-size: 13px;
+  height: 280px;
+  overflow-y: auto;
+  color: #cbd5e1;
+}
+
+.thought-entry {
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.thought-step { color: var(--accent-purple); font-weight: 600; }
+.thought-title { color: var(--accent-cyan); }
+
+/* Code Diff Box */
+.code-diff-box {
+  background: #020617;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 10px;
+  padding: 16px;
+  font-family: 'Fira Code', monospace;
+  font-size: 13px;
+  color: #4ade80;
+  max-height: 300px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
