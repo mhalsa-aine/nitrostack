@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MultiverseOps - NitroStudio Web Control Console</title>
+  <!-- Google Fonts: Outfit & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #070a12;
+      --bg-card: rgba(15, 23, 42, 0.75);
+      --bg-card-hover: rgba(30, 41, 59, 0.85);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(0, 242, 254, 0.3);
+      --accent-cyan: #00f2fe;
+      --accent-blue: #4facfe;
+      --accent-purple: #8a2be2;
+      --accent-pink: #f43f5e;
+      --accent-green: #10b981;
+      --accent-yellow: #f59e0b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --font-sans: 'Outfit', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 15% 15%, rgba(138, 43, 226, 0.15) 0px, transparent 50%),
+        radial-gradient(at 85% 20%, rgba(0, 242, 254, 0.12) 0px, transparent 50%),
+        radial-gradient(at 50% 80%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: 60px;
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(7, 10, 18, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+    }
+
+    .brand-text h1 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      background: linear-gradient(90deg, #ffffff, var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-text p {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .header-badges {
+      display: flex;
+      gap: 12px;
+    }
+
+    .badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--border-color);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 10px var(--accent-green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Layout Container */
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 28px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Control Panel */
+    .control-panel {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .command-input-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .command-input {
+      flex: 1;
+      background: rgba(10, 15, 30, 0.8);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px 18px;
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .command-input:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
+    }
+
+    .btn-fork {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 0 28px;
+      font-family: var(--font-sans);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0, 242, 254, 0.3);
+    }
+
+    .btn-fork:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(138, 43, 226, 0.5);
+    }
+
+    .btn-fork:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Preset Scenarios */
+    .preset-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .preset-pill {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 12px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .preset-pill:hover {
+      background: rgba(0, 242, 254, 0.1);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
+    /* Live Telemetry Stats Bar */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .stat-val {
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .stat-lbl {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Section Title */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Domain Grouping Tabs */
+    .domain-filters {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .domain-tab {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .domain-tab.active, .domain-tab:hover {
+      background: rgba(0, 242, 254, 0.12);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
+    /* 30-Universe Matrix Grid */
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .universe-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .universe-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 8px 24px rgba(0, 242, 254, 0.15);
+    }
+
+    .universe-card.healed {
+      border-left: 4px solid var(--accent-yellow);
+    }
+
+    .universe-card.passed {
+      border-left: 4px solid var(--accent-green);
+    }
+
+    .universe-card.running {
+      border-left: 4px solid var(--accent-cyan);
+      animation: cardPulse 1s infinite alternate;
+    }
+
+    @keyframes cardPulse {
+      from { box-shadow: 0 0 10px rgba(0, 242, 254, 0.2); }
+      to { box-shadow: 0 0 20px rgba(0, 242, 254, 0.5); }
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .u-id {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--accent-cyan);
+    }
+
+    .u-status {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-healed {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--accent-yellow);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .status-passed {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent-green);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-idle {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+    }
+
+    .u-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent-purple);
+      margin-bottom: 4px;
+    }
+
+    .u-name {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .u-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      border-top: 1px dashed var(--border-color);
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+
+    .u-meta-item {
+      display: flex;
+      justify-content: space-between;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Quantum Synthesis Output Panel */
+    .synthesis-panel {
+      background: linear-gradient(135deg, rgba(138, 43, 226, 0.1), rgba(0, 242, 254, 0.08));
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .synthesis-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .synthesis-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-deploy {
+      background: linear-gradient(135deg, var(--accent-green), #059669);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-family: var(--font-sans);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-deploy:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(16, 185, 129, 0.6);
+    }
+
+    .plan-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .plan-grid { grid-template-columns: 1fr; }
+    }
+
+    .plan-box {
+      background: rgba(10, 15, 30, 0.7);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .plan-box-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .plan-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .plan-list-item {
+      font-size: 13px;
+      line-height: 1.5;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .plan-list-item span.icon {
+      color: var(--accent-green);
+      font-weight: 700;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: #0f172a;
+      border: 1px solid var(--accent-cyan);
+      border-radius: 20px;
+      width: 90%;
+      max-width: 650px;
+      padding: 28px;
+      box-shadow: 0 0 40px rgba(0, 242, 254, 0.3);
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border: none;
+      color: var(--text-muted);
+      font-size: 20px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .modal-header {
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent-cyan);
+    }
+
+    .modal-tag {
+      font-family: var(--font-mono);
+      color: var(--accent-purple);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .modal-body {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      font-size: 13px;
+    }
+
+    .modal-field {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 10px;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .modal-lbl {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .modal-val {
+      font-family: var(--font-mono);
+      color: var(--text-main);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo">🌌</div>
+      <div class="brand-text">
+        <h1>MULTIVERSE-OPS</h1>
+        <p>NitroStudio Web Control Console • Team MultiverseOps</p>
+      </div>
+    </div>
+    <div class="header-badges">
+      <div class="badge">
+        <div class="badge-dot"></div>
+        <span>NitroStack Node v4.2 Online</span>
+      </div>
+      <div class="badge" style="color: var(--accent-cyan);">
+        <span>MCP Protocols Active</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Container -->
+  <div class="container">
+
+    <!-- Control Panel -->
+    <div class="control-panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span>⚡ High-Stakes Operational Execution Prompt</span>
+        </div>
+      </div>
+      <div class="command-input-group">
+        <input type="text" id="commandInput" class="command-input" value="Deploy global enterprise infrastructure & pricing update" placeholder="Enter high-risk operational command...">
+        <button id="btnFork" class="btn-fork">
+          <span>FORK 30 PARALLEL UNIVERSES</span>
+          <span>🚀</span>
+        </button>
+      </div>
+      <div class="preset-pills">
+        <span class="preset-pill" onclick="setPreset('Deploy global enterprise infrastructure & pricing update')">⚡ Global Infra & Pricing Update</span>
+        <span class="preset-pill" onclick="setPreset('Offboard 50 enterprise users & revoke SaaS IAM seats')">🔒 Enterprise Offboarding & IAM Sync</span>
+        <span class="preset-pill" onclick="setPreset('Execute cross-border EU financial ledger batch migration')">⚖️ Cross-Border Ledger & PII Transfer</span>
+        <span class="preset-pill" onclick="setPreset('Deploy live RAG vector index & database schema migration')">📊 RAG Vector & Schema Drift Sync</span>
+      </div>
+    </div>
+
+    <!-- Live Telemetry Stats Bar -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="color: var(--accent-cyan);">🌌</div>
+        <div>
+          <div class="stat-val" id="statTotal">30</div>
+          <div class="stat-lbl">Parallel Universes</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="color: var(--accent-green);">✨</div>
+        <div>
+          <div class="stat-val" id="statPassed" style="color: var(--accent-green);">0</div>
+          <div class="stat-lbl">Baseline Passed</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="color: var(--accent-yellow);">🛠️</div>
+        <div>
+          <div class="stat-val" id="statHealed" style="color: var(--accent-yellow);">0</div>
+          <div class="stat-lbl">Auto-Healed via MCP</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="color: var(--accent-purple);">🛡️</div>
+        <div>
+          <div class="stat-val" id="statResilience" style="color: var(--accent-cyan);">100%</div>
+          <div class="stat-lbl">Resilience Coverage</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 30-Universe Matrix Grid Header & Filters -->
+    <div class="section-header">
+      <div class="section-title">
+        <span>🌌 30-Universe Speculative Parallel Execution Matrix</span>
+      </div>
+      <div class="domain-filters" id="domainFilters">
+        <button class="domain-tab active" onclick="filterDomain('ALL', this)">All Domains (30)</button>
+        <button class="domain-tab" onclick="filterDomain(1, this)">D1: Infra & Traffic</button>
+        <button class="domain-tab" onclick="filterDomain(2, this)">D2: Cyber & Zero-Trust</button>
+        <button class="domain-tab" onclick="filterDomain(3, this)">D3: Data Mesh & RAG</button>
+        <button class="domain-tab" onclick="filterDomain(4, this)">D4: Network & Cloud</button>
+        <button class="domain-tab" onclick="filterDomain(5, this)">D5: Compliance & Legal</button>
+        <button class="domain-tab" onclick="filterDomain(6, this)">D6: FinOps & Workplace</button>
+      </div>
+    </div>
+
+    <!-- Universe Grid -->
+    <div class="matrix-grid" id="matrixGrid">
+      <!-- Generated dynamically by JS -->
+    </div>
+
+    <!-- Quantum Synthesis Output Panel -->
+    <div class="synthesis-panel" id="synthesisPanel" style="display: none;">
+      <div class="synthesis-header">
+        <div class="synthesis-title">
+          <span>⚛️ QUANTUM SYNTHESIS: 100% VERIFIED PRODUCTION PLAN</span>
+        </div>
+        <button class="btn-deploy" onclick="deployToNitroCloud()">
+          <span>DEPLOY TO NITROCLOUD EDGE</span>
+          <span>✨</span>
+        </button>
+      </div>
+      <div class="plan-grid">
+        <div class="plan-box">
+          <div class="plan-box-title">Synthesized Remediated Execution Sequence</div>
+          <ul class="plan-list" id="seqList">
+            <!-- Dynamic steps -->
+          </ul>
+        </div>
+        <div class="plan-box">
+          <div class="plan-box-title">Key MCP Tool Mitigations Synthesized</div>
+          <ul class="plan-list" id="patchList">
+            <!-- Dynamic patches -->
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-header">
+        <div class="modal-title" id="mTitle">Universe U01</div>
+        <div class="modal-tag" id="mTag">[LOAD_10X_SPIKE]</div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-field">
+          <div class="modal-lbl">Stress Condition Applied</div>
+          <div class="modal-val" id="mStress">-</div>
+        </div>
+        <div class="modal-field">
+          <div class="modal-lbl">Simulated Failure Vector</div>
+          <div class="modal-val" id="mFailure" style="color: var(--accent-pink);">-</div>
+        </div>
+        <div class="modal-field">
+          <div class="modal-lbl">Applied MCP Tool</div>
+          <div class="modal-val" id="mMcpTool" style="color: var(--accent-cyan);">-</div>
+        </div>
+        <div class="modal-field">
+          <div class="modal-lbl">Automated Mitigation Algorithm</div>
+          <div class="modal-val" id="mMitigation" style="color: var(--accent-green);">-</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let universesData = [];
+    let domainsData = {};
+    let activeFilter = 'ALL';
+    let currentResults = {};
+
+    // Load initial metadata
+    async function init() {
+      try {
+        const res = await fetch('/api/universes');
+        const data = await res.json();
+        universesData = data.universes;
+        domainsData = data.domains;
+        renderGrid();
+      } catch (err) {
+        console.error("Failed to load metadata:", err);
+      }
+    }
+
+    function setPreset(cmd) {
+      document.getElementById('commandInput').value = cmd;
+    }
+
+    function filterDomain(domainId, btnElement) {
+      activeFilter = domainId;
+      document.querySelectorAll('.domain-tab').forEach(tab => tab.classList.remove('active'));
+      if (btnElement) {
+        btnElement.classList.add('active');
+      } else if (window.event && window.event.target) {
+        window.event.target.classList.add('active');
+      }
+      renderGrid();
+    }
+
+    function updateStats() {
+      let passed = 0;
+      let healed = 0;
+      Object.values(currentResults).forEach(r => {
+        if (r.status === 'PASSED') passed++;
+        if (r.status === 'HEALED') healed++;
+      });
+      document.getElementById('statPassed').innerText = passed;
+      document.getElementById('statHealed').innerText = healed;
+    }
+
+    function renderGrid() {
+      const grid = document.getElementById('matrixGrid');
+      grid.innerHTML = '';
+
+      const filtered = activeFilter === 'ALL' 
+        ? universesData 
+        : universesData.filter(u => u.domainId == activeFilter);
+
+      filtered.forEach(u => {
+        const res = currentResults[u.id];
+        const status = res ? res.status : 'IDLE';
+        const statusClass = status === 'PASSED' ? 'passed' : (status === 'HEALED' ? 'healed' : '');
+        const badgeClass = status === 'PASSED' ? 'status-passed' : (status === 'HEALED' ? 'status-healed' : 'status-idle');
+        const badgeText = status === 'PASSED' ? 'PASSED' : (status === 'HEALED' ? 'AUTO-HEALED' : 'READY');
+
+        const card = document.createElement('div');
+        card.className = `universe-card ${statusClass}`;
+        card.onclick = () => openModal(u.id);
+
+        card.innerHTML = `
+          <div class="card-top">
+            <span class="u-id">${u.id}</span>
+            <span class="u-status ${badgeClass}">${badgeText}</span>
+          </div>
+          <div class="u-tag">${u.tag}</div>
+          <div class="u-name">${u.name}</div>
+          <div class="u-meta">
+            <div class="u-meta-item">
+              <span>Domain:</span>
+              <span style="color: var(--text-main);">${domainsData[u.domainId]?.name.split('&')[0]}</span>
+            </div>
+            <div class="u-meta-item">
+              <span>MCP Protocol:</span>
+              <span style="color: var(--accent-cyan); font-family: var(--font-mono);">${u.mcpTool.replace('mcp://', '')}</span>
+            </div>
+            ${res ? `<div class="u-meta-item"><span>Latency:</span><span style="color: var(--accent-green); font-family: var(--font-mono);">${res.latencyMs}ms</span></div>` : ''}
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Run Multiverse Simulation via SSE Stream
+    document.getElementById('btnFork').addEventListener('click', async () => {
+      const command = document.getElementById('commandInput').value;
+      if (!command) return;
+
+      const btn = document.getElementById('btnFork');
+      btn.disabled = true;
+      btn.innerHTML = '<span>FORKING 30 REAL-TIME UNIVERSES...</span> ⚡';
+
+      document.getElementById('statPassed').innerText = '0';
+      document.getElementById('statHealed').innerText = '0';
+      document.getElementById('synthesisPanel').style.display = 'none';
+      currentResults = {};
+      renderGrid();
+
+      // Check if EventSource is supported for SSE real-time streaming
+      if (!!window.EventSource) {
+        const streamUrl = `/api/stream-matrix?command=${encodeURIComponent(command)}`;
+        const eventSource = new EventSource(streamUrl);
+
+        eventSource.addEventListener('universe_complete', (event) => {
+          const uResult = JSON.parse(event.data);
+          currentResults[uResult.id] = uResult;
+          updateStats();
+          renderGrid();
+        });
+
+        eventSource.addEventListener('matrix_complete', (event) => {
+          const finalResult = JSON.parse(event.data);
+          renderSynthesis(finalResult.synthesizedPlan);
+          eventSource.close();
+          btn.disabled = false;
+          btn.innerHTML = '<span>FORK 30 PARALLEL UNIVERSES</span> 🚀';
+        });
+
+        eventSource.onerror = (err) => {
+          console.warn("SSE Stream interrupted, falling back to POST REST execution:", err);
+          eventSource.close();
+          runPostFallback(command, btn);
+        };
+      } else {
+        runPostFallback(command, btn);
+      }
+    });
+
+    async function runPostFallback(command, btn) {
+      try {
+        const response = await fetch('/api/run-simulation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ command })
+        });
+        const json = await response.json();
+        
+        if (json.success) {
+          const data = json.data;
+          data.results.forEach(r => {
+            currentResults[r.id] = r;
+          });
+
+          updateStats();
+          renderGrid();
+          renderSynthesis(data.synthesizedPlan);
+        }
+      } catch (err) {
+        alert("Error running simulation: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>FORK 30 PARALLEL UNIVERSES</span> 🚀';
+      }
+    }
+
+    function renderSynthesis(plan) {
+      const panel = document.getElementById('synthesisPanel');
+      panel.style.display = 'block';
+
+      const seqList = document.getElementById('seqList');
+      seqList.innerHTML = plan.executionSequence.map(s => `
+        <li class="plan-list-item">
+          <span class="icon">✓</span>
+          <span>${s}</span>
+        </li>
+      `).join('');
+
+      const patchList = document.getElementById('patchList');
+      patchList.innerHTML = plan.synthesizedPatches.slice(0, 6).map(p => `
+        <li class="plan-list-item">
+          <span class="icon" style="color: var(--accent-cyan);">[${p.universe}]</span>
+          <span><strong>${p.mcpPatch}:</strong> ${p.patchAction}</span>
+        </li>
+      `).join('');
+
+      panel.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function openModal(uId) {
+      const u = universesData.find(x => x.id === uId);
+      const res = currentResults[uId];
+      if (!u) return;
+
+      document.getElementById('mTitle').innerText = `${u.id}: ${u.name}`;
+      document.getElementById('mTag').innerText = u.tag;
+      document.getElementById('mStress').innerText = u.stressCondition;
+      document.getElementById('mFailure').innerText = u.simulatedFailure;
+      document.getElementById('mMcpTool').innerText = u.mcpTool;
+      document.getElementById('mMitigation').innerText = u.mitigation;
+
+      document.getElementById('modalOverlay').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+    }
+
+    async function deployToNitroCloud() {
+      const command = document.getElementById('commandInput').value;
+      try {
+        const res = await fetch('/api/deploy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ taskCommand: command })
+        });
+        const data = await res.json();
+        alert(`🚀 NITROCLOUD DEPLOYMENT SUCCESSFUL!\n\nDeploy ID: ${data.deployId}\nStatus: ${data.status}\n\n100% verified production execution plan is now live across edge nodes.`);
+      } catch (err) {
+        alert("Deployment error: " + err.message);
+      }
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
