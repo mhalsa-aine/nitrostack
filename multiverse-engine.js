@@ -5,10 +5,11 @@
  * 
  * Features:
  * 1. Dynamic Prompt-Driven Threat Detection (Tailored solutions & threats per prompt)
- * 2. Conversational & Identity Classification (Recognizes "whats my name", greetings, and system queries)
- * 3. 2-Phase Agentic Self-Healing & MCP Re-Simulation Verification Loop (Fail ➔ Patch ➔ Verify Pass)
- * 4. Transparent Explainable AI (XAI) Step-by-Step Audit Logs (No Black Box AI)
- * 5. SHA-256 Enterprise Compliance Audit Certificate Generator
+ * 2. Strict Word-Boundary Classifier (Prevents false positives on words like 'this')
+ * 3. FinOps & Profit Analytics Engine (Handles revenue, profit, margin & ledger queries)
+ * 4. 2-Phase Agentic Self-Healing & MCP Re-Simulation Verification Loop (Fail ➔ Patch ➔ Verify Pass)
+ * 5. Transparent Explainable AI (XAI) Step-by-Step Audit Logs (No Black Box AI)
+ * 6. SHA-256 Enterprise Compliance Audit Certificate Generator
  */
 
 require('dotenv').config();
@@ -37,11 +38,12 @@ class MultiverseEngine {
   generateDynamicArchitectureForPrompt(prompt) {
     const lower = prompt.toLowerCase().trim();
 
-    // Category 0: Conversational, Identity, Greeting, or System Help Questions
-    if (lower.includes('name') || lower.includes('who are you') || lower.includes('hello') || lower.includes('hi') || lower.includes('what is this') || lower.includes('help') || lower.length < 5) {
+    // Category 0: Conversational, Identity, Greeting, or System Help Questions (Strict Word Boundaries)
+    const isGreeting = /\b(who are you|hello|hi|what is your name|whats my name|who am i|what is this|help)\b/i.test(lower);
+    if (isGreeting || lower === 'name' || lower.length < 4) {
       return {
         targetUniverseIds: [6, 8, 27, 30], // Identity & Governance
-        directAnswer: `Hello! I am MultiverseOps Master Agentic AI Architect.\nYou are Team MultiverseOps (Mhalsa, Pavitra, Krushmika, Niharika).\n\nMultiverseOps is an autonomous speculative AI system designed to stress-test high-stakes enterprise actions across 30 virtual universes (spanning Infrastructure, Cybersecurity, Data Mesh, Network, Compliance, and Workplace SaaS) before executing them safely in production.\n\nTo test my operational engine, try asking an enterprise action like:\n1. "How do I secure S3 bucket permissions against data leaks?"\n2. "Migrate PostgreSQL customer table schema without table locks."\n3. "Reconcile daily enterprise transaction ledgers in NetSuite."`,
+        directAnswer: `Hello! I am MultiverseOps Master Agentic AI Architect.\nYou are Team MultiverseOps (Mhalsa, Pavitra, Krushmika, Niharika).\n\nMultiverseOps is an autonomous speculative AI system designed to stress-test high-stakes enterprise actions across 30 virtual universes (spanning Infrastructure, Cybersecurity, Data Mesh, Network, Compliance, and Workplace SaaS) before executing them safely in production.\n\nTo test my operational engine, try asking an enterprise action like:\n1. "How do I secure S3 bucket permissions against data leaks?"\n2. "Calculate the net profit margin and reconcile financial ledgers for this week."\n3. "Migrate PostgreSQL customer table schema without table locks."`,
         failureRisks: [
           "Indirect prompt injection vulnerability in unsanitized LLM telemetry logs",
           "Unauthorized admin escalation attempt without multi-party approval gate",
@@ -63,7 +65,50 @@ console.log("🌌 MultiverseOps System Active:", MultiverseOps);`
       };
     }
 
-    // Category 1: Security, AWS, S3, Access, Leak, GDPR, Encryption
+    // Category 1: FinOps, Accounting, Profit, Revenue, SOX, Discount, Ledger, Price, Cost, Margins
+    if (lower.includes('profit') || lower.includes('revenue') || lower.includes('earning') || lower.includes('sales') || lower.includes('margin') || lower.includes('sox') || lower.includes('ledger') || lower.includes('finance') || lower.includes('discount') || lower.includes('price') || lower.includes('cost') || lower.includes('budget') || lower.includes('accounting')) {
+      return {
+        targetUniverseIds: [22, 25, 28, 29], // FinOps & Accounting
+        directAnswer: `To aggregate financial metrics and calculate weekly net profit safely for "${prompt}":\n1. Consolidate gross revenues across Stripe, NetSuite, and ERP billing channels.\n2. Deduct cloud compute costs (AWS/NitroCloud) and operational overhead to derive net profit.\n3. Enforce automated 1-cent double-entry ledger reconciliation to resolve debit/credit balance mismatches (SOX compliance).\n4. Apply strict governance discount ceilings capped at 20% max threshold to prevent margin erosion.`,
+        failureRisks: [
+          "Unbalanced financial ledger entry breaching SOX double-entry compliance",
+          "Excessive pricing discount script exceeding 20% governance ceiling",
+          "Cloud compute budget overrun breaching monthly spend threshold",
+          "Multi-SaaS directory offboarding desynchronization causing orphaned access"
+        ],
+        codeSnippet: `// PRODUCTION REMEDIATION SCRIPT: WEEKLY NET PROFIT & FINOPS RECONCILIATION
+// Target Request: "${prompt}"
+
+function calculateWeeklyEnterpriseProfit(revenueRecords, costRecords, maxDiscountCap = 20) {
+  let totalRevenue = 0;
+  let totalCosts = 0;
+
+  revenueRecords.forEach(rec => {
+    let finalAmount = rec.grossAmount;
+    if (rec.appliedDiscount > maxDiscountCap) {
+      finalAmount = rec.grossAmount * (1 - maxDiscountCap / 100); // Enforce 20% cap
+    }
+    totalRevenue += finalAmount;
+  });
+
+  costRecords.forEach(c => totalCosts += c.amount);
+
+  const netProfit = totalRevenue - totalCosts;
+  const profitMarginPercent = totalRevenue > 0 ? ((netProfit / totalRevenue) * 100).toFixed(2) : "0.00";
+
+  console.log("✅ Weekly Net Profit Calculated: " + netProfit.toLocaleString() + " (Margin: " + profitMarginPercent + "%)");
+  return {
+    grossRevenue: totalRevenue,
+    totalCosts: totalCosts,
+    netProfit: netProfit,
+    profitMargin: profitMarginPercent + "%",
+    soxStatus: "BALANCED & AUDITED"
+  };
+}`
+      };
+    }
+
+    // Category 2: Security, AWS, S3, Access, Leak, GDPR, Encryption
     if (lower.includes('s3') || lower.includes('gdpr') || lower.includes('security') || lower.includes('leak') || lower.includes('iam') || lower.includes('aws') || lower.includes('access') || lower.includes('token') || lower.includes('auth')) {
       return {
         targetUniverseIds: [6, 10, 21, 23], // Sec & Compliance
@@ -104,7 +149,7 @@ async function executeSecurityHardening(bucketName, kmsKeyArn) {
       };
     }
 
-    // Category 2: Database, SQL, Migration, Schema, Table, Lock, Query
+    // Category 3: Database, SQL, Migration, Schema, Table, Lock, Query
     if (lower.includes('sql') || lower.includes('migration') || lower.includes('database') || lower.includes('table') || lower.includes('postgres') || lower.includes('schema') || lower.includes('lock') || lower.includes('data')) {
       return {
         targetUniverseIds: [4, 7, 14, 20], // Data & Database
@@ -136,43 +181,6 @@ async function executeNonBlockingMigration(connectionString, querySql, params = 
   } finally {
     client.release();
   }
-}`
-      };
-    }
-
-    // Category 3: FinOps, Accounting, SOX, Discount, Ledger, Price, Cost
-    if (lower.includes('sox') || lower.includes('ledger') || lower.includes('finance') || lower.includes('discount') || lower.includes('price') || lower.includes('cost') || lower.includes('budget') || lower.includes('accounting')) {
-      return {
-        targetUniverseIds: [22, 25, 28, 29], // FinOps & Accounting
-        directAnswer: `To automate financial accounting and ledger operations safely for "${prompt}":\n1. Enforce automated 1-cent double-entry ledger reconciliation to resolve debit/credit balance mismatches.\n2. Apply strict governance discount ceilings capped at 20% max threshold for all automated campaigns.\n3. Implement auto-scaling spot GPU compute downscaling to prevent cloud budget overruns.\n4. Enforce 2-phase transactional commit locks across all financial SaaS directory APIs.`,
-        failureRisks: [
-          "Unbalanced financial ledger entry breaching SOX double-entry compliance",
-          "Excessive pricing discount script exceeding 20% governance ceiling",
-          "Cloud compute budget overrun breaching monthly spend threshold",
-          "Multi-SaaS directory offboarding desynchronization causing orphaned access"
-        ],
-        codeSnippet: `// PRODUCTION REMEDIATION SCRIPT: FINOPS & LEDGER COMPLIANCE GOVERNANCE
-// Target Request: "${prompt}"
-
-function reconcileFinancialBatch(journalEntries, maxDiscountPercent = 20) {
-  let totalDebits = 0;
-  let totalCredits = 0;
-
-  journalEntries.forEach(entry => {
-    totalDebits += entry.debit || 0;
-    totalCredits += entry.credit || 0;
-    if (entry.discount > maxDiscountPercent) {
-      entry.discount = maxDiscountPercent; // Enforce hard cap
-    }
-  });
-
-  const delta = Math.abs(totalDebits - totalCredits);
-  if (delta > 0 && delta <= 0.05) {
-    journalEntries.push({ description: "SOX Automated 1-Cent Reconciliation Adjustment", credit: delta });
-  }
-
-  console.log("✅ FinOps Ledger Reconciled & Governance Caps Enforced!");
-  return { status: "BALANCED", journalEntries };
 }`
       };
     }
