@@ -5,9 +5,10 @@
  * 
  * Features:
  * 1. Dynamic Prompt-Driven Threat Detection (Tailored solutions & threats per prompt)
- * 2. 2-Phase Agentic Self-Healing & MCP Re-Simulation Verification Loop (Fail ➔ Patch ➔ Verify Pass)
- * 3. Transparent Explainable AI (XAI) Step-by-Step Audit Logs (No Black Box AI)
- * 4. SHA-256 Enterprise Compliance Audit Certificate Generator
+ * 2. Conversational & Identity Classification (Recognizes "whats my name", greetings, and system queries)
+ * 3. 2-Phase Agentic Self-Healing & MCP Re-Simulation Verification Loop (Fail ➔ Patch ➔ Verify Pass)
+ * 4. Transparent Explainable AI (XAI) Step-by-Step Audit Logs (No Black Box AI)
+ * 5. SHA-256 Enterprise Compliance Audit Certificate Generator
  */
 
 require('dotenv').config();
@@ -34,7 +35,33 @@ class MultiverseEngine {
    * Generates dynamic architectural solutions, threat vectors, and code tailored specifically to ANY prompt
    */
   generateDynamicArchitectureForPrompt(prompt) {
-    const lower = prompt.toLowerCase();
+    const lower = prompt.toLowerCase().trim();
+
+    // Category 0: Conversational, Identity, Greeting, or System Help Questions
+    if (lower.includes('name') || lower.includes('who are you') || lower.includes('hello') || lower.includes('hi') || lower.includes('what is this') || lower.includes('help') || lower.length < 5) {
+      return {
+        targetUniverseIds: [6, 8, 27, 30], // Identity & Governance
+        directAnswer: `Hello! I am MultiverseOps Master Agentic AI Architect.\nYou are Team MultiverseOps (Mhalsa, Pavitra, Krushmika, Niharika).\n\nMultiverseOps is an autonomous speculative AI system designed to stress-test high-stakes enterprise actions across 30 virtual universes (spanning Infrastructure, Cybersecurity, Data Mesh, Network, Compliance, and Workplace SaaS) before executing them safely in production.\n\nTo test my operational engine, try asking an enterprise action like:\n1. "How do I secure S3 bucket permissions against data leaks?"\n2. "Migrate PostgreSQL customer table schema without table locks."\n3. "Reconcile daily enterprise transaction ledgers in NetSuite."`,
+        failureRisks: [
+          "Indirect prompt injection vulnerability in unsanitized LLM telemetry logs",
+          "Unauthorized admin escalation attempt without multi-party approval gate",
+          "Stalled approval workflow SLA timeout in enterprise directory",
+          "Knowledge base gap due to undocumented runbook procedure step"
+        ],
+        codeSnippet: `// MULTIVERSE-OPS AGENTIC SYSTEM IDENTITY & CAPABILITY MANIFEST
+// Role: Master Agentic AI Architect & Speculative Execution Engine
+
+const MultiverseOps = {
+  version: "3.0.0",
+  architecture: "Model Context Protocol (MCP) JSON-RPC 2.0 + Google Gemini LLM",
+  activeUniverses: 30,
+  team: ["Mhalsa (Simulator Engine)", "Pavitra (MCP Payload Lead)", "Krushmika (Terminal UI)", "Niharika (Web Console)"],
+  status: "ONLINE & READY FOR ENTERPRISE OPERATIONAL PROMPTS"
+};
+
+console.log("🌌 MultiverseOps System Active:", MultiverseOps);`
+      };
+    }
 
     // Category 1: Security, AWS, S3, Access, Leak, GDPR, Encryption
     if (lower.includes('s3') || lower.includes('gdpr') || lower.includes('security') || lower.includes('leak') || lower.includes('iam') || lower.includes('aws') || lower.includes('access') || lower.includes('token') || lower.includes('auth')) {
