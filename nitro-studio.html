@@ -4,27 +4,44 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MultiverseOps - NitroStudio Web Control Console</title>
-  <!-- Google Fonts: Outfit & JetBrains Mono -->
+  <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg-dark: #070a12;
-      --bg-card: rgba(15, 23, 42, 0.75);
-      --bg-card-hover: rgba(30, 41, 59, 0.85);
-      --border-color: rgba(255, 255, 255, 0.08);
-      --border-glow: rgba(0, 242, 254, 0.3);
-      --accent-cyan: #00f2fe;
-      --accent-blue: #4facfe;
-      --accent-purple: #8a2be2;
-      --accent-pink: #f43f5e;
-      --accent-green: #10b981;
-      --accent-yellow: #f59e0b;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --font-sans: 'Outfit', sans-serif;
+      /* Light theme: white background, dark/brown text */
+      --bg-dark: #ffffff;
+      --bg-page-alt: #faf9f7;
+      --bg-card: #ffffff;
+      --bg-card-hover: #fbfaf8;
+      --bg-tint: rgba(0, 0, 0, 0.03);
+      --border-color: rgba(60, 45, 35, 0.12);
+      --border-glow: rgba(37, 99, 235, 0.25);
+
+      /* Interactive / link color */
+      --link-blue: #2563eb;
+      --link-blue-hover: #1d4ed8;
+
+      /* Pastel icon accents (kept variable names for JS compatibility) */
+      --accent-cyan: #2563eb;       /* links, ids, primary interactive — solid blue */
+      --accent-blue: #60a5fa;       /* secondary blue */
+      --accent-purple: #7c5cbf;     /* soft purple — readable on white for tags/labels */
+      --accent-pink: #c2555a;       /* soft brick-rose — readable error text */
+      --accent-green: #16a34a;      /* success text (darker for readability) */
+      --accent-yellow: #b45309;     /* warning text (darker for readability) */
+
+      /* Pastel icon fills (used for icon chip backgrounds) */
+      --icon-blue-bg: #dbeafe;
+      --icon-green-bg: #dcfce7;
+      --icon-amber-bg: #fef3c7;
+      --icon-purple-bg: #ede9fe;
+
+      --text-main: #2b2320;        /* near-black, warm */
+      --text-muted: #7a6a5f;       /* brown-gray */
+
+      --font-sans: 'Inter', -apple-system, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
     }
 
@@ -35,17 +52,21 @@
     }
 
     body {
-      background-color: var(--bg-dark);
-      background-image: 
-        radial-gradient(at 15% 15%, rgba(138, 43, 226, 0.15) 0px, transparent 50%),
-        radial-gradient(at 85% 20%, rgba(0, 242, 254, 0.12) 0px, transparent 50%),
-        radial-gradient(at 50% 80%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
-      background-attachment: fixed;
+      background-color: var(--bg-page-alt);
       color: var(--text-main);
       font-family: var(--font-sans);
       min-height: 100vh;
       overflow-x: hidden;
       padding-bottom: 60px;
+      line-height: 1.5;
+    }
+
+    a {
+      color: var(--link-blue);
+    }
+
+    a:hover {
+      color: var(--link-blue-hover);
     }
 
     /* Header */
@@ -53,8 +74,8 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(7, 10, 18, 0.85);
-      backdrop-filter: blur(16px);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border-color);
       padding: 16px 32px;
       display: flex;
@@ -69,63 +90,63 @@
     }
 
     .brand-logo {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--accent-cyan);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
-      box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
     }
 
     .brand-text h1 {
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      background: linear-gradient(90deg, #ffffff, var(--accent-cyan));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      color: var(--text-main);
     }
 
     .brand-text p {
       font-size: 11px;
       color: var(--text-muted);
-      letter-spacing: 1px;
+      letter-spacing: 0.4px;
       text-transform: uppercase;
+      margin-top: 2px;
     }
 
     .header-badges {
       display: flex;
-      gap: 12px;
+      gap: 10px;
     }
 
     .badge {
-      padding: 6px 14px;
-      border-radius: 20px;
+      padding: 6px 12px;
+      border-radius: 8px;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 500;
       display: flex;
       align-items: center;
       gap: 6px;
       border: 1px solid var(--border-color);
-      background: rgba(255, 255, 255, 0.03);
+      background: var(--bg-tint);
+      color: var(--text-muted);
     }
 
     .badge-dot {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: var(--accent-green);
-      box-shadow: 0 0 10px var(--accent-green);
-      animation: pulse 2s infinite;
+      animation: pulse 2.4s infinite;
     }
 
     @keyframes pulse {
-      0% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(1.2); }
-      100% { opacity: 1; transform: scale(1); }
+      0% { opacity: 1; }
+      50% { opacity: 0.4; }
+      100% { opacity: 1; }
     }
 
     /* Layout Container */
@@ -135,87 +156,82 @@
       padding: 28px 32px;
       display: flex;
       flex-direction: column;
-      gap: 28px;
+      gap: 24px;
     }
 
     /* Control Panel */
     .control-panel {
       background: var(--bg-card);
-      backdrop-filter: blur(12px);
       border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 24px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      padding: 22px;
+      box-shadow: 0 1px 3px rgba(60, 45, 35, 0.06);
     }
 
     .panel-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .panel-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--accent-cyan);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
       display: flex;
       align-items: center;
       gap: 8px;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.6px;
     }
 
     .command-input-group {
       display: flex;
       gap: 12px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .command-input {
       flex: 1;
-      background: rgba(10, 15, 30, 0.8);
+      background: var(--bg-page-alt);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 14px 18px;
+      border-radius: 8px;
+      padding: 12px 16px;
       color: var(--text-main);
       font-family: var(--font-mono);
-      font-size: 14px;
+      font-size: 13px;
       outline: none;
-      transition: all 0.3s ease;
+      transition: border-color 0.2s ease;
     }
 
     .command-input:focus {
       border-color: var(--accent-cyan);
-      box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
     }
 
     .btn-fork {
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      background: var(--accent-cyan);
       color: #ffffff;
       border: none;
-      border-radius: 12px;
-      padding: 0 28px;
+      border-radius: 8px;
+      padding: 0 24px;
       font-family: var(--font-sans);
-      font-weight: 700;
-      font-size: 14px;
+      font-weight: 600;
+      font-size: 13px;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 8px;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 20px rgba(0, 242, 254, 0.3);
+      transition: background 0.2s ease;
     }
 
     .btn-fork:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 28px rgba(138, 43, 226, 0.5);
+      background: #2563eb;
     }
 
     .btn-fork:disabled {
       opacity: 0.5;
       cursor: not-allowed;
-      transform: none;
     }
 
     /* Preset Scenarios */
@@ -226,18 +242,18 @@
     }
 
     .preset-pill {
-      background: rgba(255, 255, 255, 0.04);
+      background: var(--bg-tint);
       border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 6px 14px;
+      border-radius: 8px;
+      padding: 6px 12px;
       font-size: 12px;
       color: var(--text-muted);
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
     }
 
     .preset-pill:hover {
-      background: rgba(0, 242, 254, 0.1);
+      background: rgba(59, 130, 246, 0.1);
       border-color: var(--accent-cyan);
       color: var(--accent-cyan);
     }
@@ -246,42 +262,43 @@
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
+      gap: 14px;
     }
 
     .stat-card {
       background: var(--bg-card);
-      backdrop-filter: blur(12px);
       border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 18px;
+      border-radius: 10px;
+      padding: 16px;
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
+      box-shadow: 0 1px 3px rgba(60, 45, 35, 0.06);
     }
 
     .stat-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.05);
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--icon-blue-bg);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+      font-size: 17px;
     }
 
     .stat-val {
-      font-size: 24px;
-      font-weight: 800;
+      font-size: 21px;
+      font-weight: 700;
       line-height: 1.2;
     }
 
     .stat-lbl {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
+      margin-top: 2px;
     }
 
     /* Section Title */
@@ -289,16 +306,18 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 8px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .section-title {
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     /* Domain Grouping Tabs */
@@ -310,20 +329,20 @@
     }
 
     .domain-tab {
-      background: rgba(255, 255, 255, 0.03);
+      background: var(--bg-tint);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 8px 16px;
+      border-radius: 8px;
+      padding: 7px 14px;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 500;
       color: var(--text-muted);
       cursor: pointer;
       white-space: nowrap;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
     }
 
     .domain-tab.active, .domain-tab:hover {
-      background: rgba(0, 242, 254, 0.12);
+      background: rgba(59, 130, 246, 0.12);
       border-color: var(--accent-cyan);
       color: var(--accent-cyan);
     }
@@ -332,43 +351,36 @@
     .matrix-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 16px;
+      gap: 14px;
     }
 
     .universe-card {
       background: var(--bg-card);
-      backdrop-filter: blur(12px);
       border: 1px solid var(--border-color);
-      border-radius: 16px;
+      border-radius: 10px;
       padding: 16px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
       position: relative;
       overflow: hidden;
+      box-shadow: 0 1px 3px rgba(60, 45, 35, 0.05);
     }
 
     .universe-card:hover {
-      transform: translateY(-4px);
+      transform: translateY(-2px);
       border-color: var(--accent-cyan);
-      box-shadow: 0 8px 24px rgba(0, 242, 254, 0.15);
     }
 
     .universe-card.healed {
-      border-left: 4px solid var(--accent-yellow);
+      border-left: 3px solid var(--accent-yellow);
     }
 
     .universe-card.passed {
-      border-left: 4px solid var(--accent-green);
+      border-left: 3px solid var(--accent-green);
     }
 
     .universe-card.running {
-      border-left: 4px solid var(--accent-cyan);
-      animation: cardPulse 1s infinite alternate;
-    }
-
-    @keyframes cardPulse {
-      from { box-shadow: 0 0 10px rgba(0, 242, 254, 0.2); }
-      to { box-shadow: 0 0 20px rgba(0, 242, 254, 0.5); }
+      border-left: 3px solid var(--accent-cyan);
     }
 
     .card-top {
@@ -380,34 +392,34 @@
 
     .u-id {
       font-family: var(--font-mono);
-      font-weight: 700;
-      font-size: 14px;
+      font-weight: 600;
+      font-size: 13px;
       color: var(--accent-cyan);
     }
 
     .u-status {
       font-size: 10px;
-      font-weight: 700;
+      font-weight: 600;
       padding: 3px 8px;
-      border-radius: 10px;
+      border-radius: 6px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
     }
 
     .status-healed {
-      background: rgba(245, 158, 11, 0.15);
+      background: rgba(234, 179, 8, 0.12);
       color: var(--accent-yellow);
-      border: 1px solid rgba(245, 158, 11, 0.3);
+      border: 1px solid rgba(234, 179, 8, 0.25);
     }
 
     .status-passed {
-      background: rgba(16, 185, 129, 0.15);
+      background: rgba(34, 197, 94, 0.12);
       color: var(--accent-green);
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      border: 1px solid rgba(34, 197, 94, 0.25);
     }
 
     .status-idle {
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--bg-tint);
       color: var(--text-muted);
     }
 
@@ -420,9 +432,10 @@
 
     .u-name {
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 500;
       margin-bottom: 8px;
-      line-height: 1.3;
+      line-height: 1.35;
+      color: var(--text-main);
     }
 
     .u-meta {
@@ -431,7 +444,7 @@
       display: flex;
       flex-direction: column;
       gap: 4px;
-      border-top: 1px dashed var(--border-color);
+      border-top: 1px solid var(--border-color);
       padding-top: 8px;
       margin-top: 8px;
     }
@@ -446,56 +459,55 @@
 
     /* Quantum Synthesis Output Panel */
     .synthesis-panel {
-      background: linear-gradient(135deg, rgba(138, 43, 226, 0.1), rgba(0, 242, 254, 0.08));
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(0, 242, 254, 0.3);
-      border-radius: 20px;
-      padding: 28px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(60, 45, 35, 0.06);
     }
 
     .synthesis-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 12px;
     }
 
     .synthesis-title {
-      font-size: 18px;
-      font-weight: 800;
-      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .btn-deploy {
-      background: linear-gradient(135deg, var(--accent-green), #059669);
-      color: #ffffff;
+      background: var(--accent-green);
+      color: #06210f;
       border: none;
-      border-radius: 12px;
-      padding: 12px 24px;
+      border-radius: 8px;
+      padding: 11px 22px;
       font-family: var(--font-sans);
-      font-weight: 700;
-      font-size: 14px;
+      font-weight: 600;
+      font-size: 13px;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 8px;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+      transition: background 0.2s ease;
     }
 
     .btn-deploy:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 28px rgba(16, 185, 129, 0.6);
+      background: #16a34a;
     }
 
     .plan-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      gap: 18px;
     }
 
     @media (max-width: 900px) {
@@ -503,18 +515,18 @@
     }
 
     .plan-box {
-      background: rgba(10, 15, 30, 0.7);
+      background: var(--bg-page-alt);
       border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 18px;
+      border-radius: 10px;
+      padding: 16px;
     }
 
     .plan-box-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--accent-cyan);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
       margin-bottom: 12px;
     }
 
@@ -531,6 +543,7 @@
       display: flex;
       gap: 10px;
       align-items: flex-start;
+      color: var(--text-main);
     }
 
     .plan-list-item span.icon {
@@ -545,15 +558,15 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(6px);
       z-index: 1000;
       display: flex;
       align-items: center;
       justify-content: center;
       opacity: 0;
       pointer-events: none;
-      transition: all 0.3s ease;
+      transition: opacity 0.2s ease;
     }
 
     .modal-overlay.active {
@@ -562,27 +575,27 @@
     }
 
     .modal-card {
-      background: #0f172a;
-      border: 1px solid var(--accent-cyan);
-      border-radius: 20px;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
       width: 90%;
-      max-width: 650px;
-      padding: 28px;
-      box-shadow: 0 0 40px rgba(0, 242, 254, 0.3);
+      max-width: 620px;
+      padding: 26px;
       position: relative;
+      box-shadow: 0 8px 30px rgba(60, 45, 35, 0.15);
     }
 
     .modal-close {
       position: absolute;
-      top: 20px;
-      right: 20px;
-      background: rgba(255, 255, 255, 0.05);
+      top: 18px;
+      right: 18px;
+      background: var(--bg-tint);
       border: none;
       color: var(--text-muted);
-      font-size: 20px;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
+      font-size: 16px;
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
       cursor: pointer;
     }
 
@@ -591,28 +604,28 @@
     }
 
     .modal-title {
-      font-size: 20px;
-      font-weight: 800;
-      color: var(--accent-cyan);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
     }
 
     .modal-tag {
       font-family: var(--font-mono);
       color: var(--accent-purple);
-      font-size: 13px;
+      font-size: 12px;
       margin-top: 4px;
     }
 
     .modal-body {
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
       font-size: 13px;
     }
 
     .modal-field {
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 10px;
+      background: var(--bg-tint);
+      border-radius: 8px;
       padding: 12px;
       border: 1px solid var(--border-color);
     }
@@ -635,10 +648,10 @@
   <!-- Header -->
   <header>
     <div class="brand">
-      <div class="brand-logo">🌌</div>
+      <div class="brand-logo">M</div>
       <div class="brand-text">
-        <h1>MULTIVERSE-OPS</h1>
-        <p>NitroStudio Web Control Console • Team MultiverseOps</p>
+        <h1>MultiverseOps</h1>
+        <p>NitroStudio Control Console</p>
       </div>
     </div>
     <div class="header-badges">
@@ -646,7 +659,7 @@
         <div class="badge-dot"></div>
         <span>NitroStack Node v4.2 Online</span>
       </div>
-      <div class="badge" style="color: var(--accent-cyan);">
+      <div class="badge">
         <span>MCP Protocols Active</span>
       </div>
     </div>
@@ -659,49 +672,48 @@
     <div class="control-panel">
       <div class="panel-header">
         <div class="panel-title">
-          <span>⚡ High-Stakes Operational Execution Prompt</span>
+          <span>Operational Execution Prompt</span>
         </div>
       </div>
       <div class="command-input-group">
-        <input type="text" id="commandInput" class="command-input" value="Deploy global enterprise infrastructure & pricing update" placeholder="Enter high-risk operational command...">
+        <input type="text" id="commandInput" class="command-input" value="Deploy global enterprise infrastructure & pricing update" placeholder="Enter operational command...">
         <button id="btnFork" class="btn-fork">
-          <span>FORK 30 PARALLEL UNIVERSES</span>
-          <span>🚀</span>
+          <span>Fork 30 Parallel Universes</span>
         </button>
       </div>
       <div class="preset-pills">
-        <span class="preset-pill" onclick="setPreset('Deploy global enterprise infrastructure & pricing update')">⚡ Global Infra & Pricing Update</span>
-        <span class="preset-pill" onclick="setPreset('Offboard 50 enterprise users & revoke SaaS IAM seats')">🔒 Enterprise Offboarding & IAM Sync</span>
-        <span class="preset-pill" onclick="setPreset('Execute cross-border EU financial ledger batch migration')">⚖️ Cross-Border Ledger & PII Transfer</span>
-        <span class="preset-pill" onclick="setPreset('Deploy live RAG vector index & database schema migration')">📊 RAG Vector & Schema Drift Sync</span>
+        <span class="preset-pill" onclick="setPreset('Deploy global enterprise infrastructure & pricing update')">Global Infra & Pricing Update</span>
+        <span class="preset-pill" onclick="setPreset('Offboard 50 enterprise users & revoke SaaS IAM seats')">Enterprise Offboarding & IAM Sync</span>
+        <span class="preset-pill" onclick="setPreset('Execute cross-border EU financial ledger batch migration')">Cross-Border Ledger & PII Transfer</span>
+        <span class="preset-pill" onclick="setPreset('Deploy live RAG vector index & database schema migration')">RAG Vector & Schema Drift Sync</span>
       </div>
     </div>
 
     <!-- Live Telemetry Stats Bar -->
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-icon" style="color: var(--accent-cyan);">🌌</div>
+        <div class="stat-icon" style="color: var(--accent-cyan); background: var(--icon-blue-bg);">◆</div>
         <div>
           <div class="stat-val" id="statTotal">30</div>
           <div class="stat-lbl">Parallel Universes</div>
         </div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon" style="color: var(--accent-green);">✨</div>
+        <div class="stat-icon" style="color: var(--accent-green); background: var(--icon-green-bg);">✓</div>
         <div>
           <div class="stat-val" id="statPassed" style="color: var(--accent-green);">0</div>
           <div class="stat-lbl">Baseline Passed</div>
         </div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon" style="color: var(--accent-yellow);">🛠️</div>
+        <div class="stat-icon" style="color: var(--accent-yellow); background: var(--icon-amber-bg);">⚠</div>
         <div>
           <div class="stat-val" id="statHealed" style="color: var(--accent-yellow);">0</div>
           <div class="stat-lbl">Auto-Healed via MCP</div>
         </div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon" style="color: var(--accent-purple);">🛡️</div>
+        <div class="stat-icon" style="color: var(--accent-purple); background: var(--icon-purple-bg);">◇</div>
         <div>
           <div class="stat-val" id="statResilience" style="color: var(--accent-cyan);">100%</div>
           <div class="stat-lbl">Resilience Coverage</div>
@@ -712,7 +724,7 @@
     <!-- 30-Universe Matrix Grid Header & Filters -->
     <div class="section-header">
       <div class="section-title">
-        <span>🌌 30-Universe Speculative Parallel Execution Matrix</span>
+        <span>30-Universe Speculative Parallel Execution Matrix</span>
       </div>
       <div class="domain-filters" id="domainFilters">
         <button class="domain-tab active" onclick="filterDomain('ALL', this)">All Domains (30)</button>
@@ -734,11 +746,10 @@
     <div class="synthesis-panel" id="synthesisPanel" style="display: none;">
       <div class="synthesis-header">
         <div class="synthesis-title">
-          <span>⚛️ QUANTUM SYNTHESIS: 100% VERIFIED PRODUCTION PLAN</span>
+          <span>Synthesis: Verified Production Plan</span>
         </div>
         <button class="btn-deploy" onclick="deployToNitroCloud()">
-          <span>DEPLOY TO NITROCLOUD EDGE</span>
-          <span>✨</span>
+          <span>Deploy to NitroCloud Edge</span>
         </button>
       </div>
       <div class="plan-grid">
@@ -837,8 +848,8 @@
       const grid = document.getElementById('matrixGrid');
       grid.innerHTML = '';
 
-      const filtered = activeFilter === 'ALL' 
-        ? universesData 
+      const filtered = activeFilter === 'ALL'
+        ? universesData
         : universesData.filter(u => u.domainId == activeFilter);
 
       filtered.forEach(u => {
@@ -882,7 +893,7 @@
 
       const btn = document.getElementById('btnFork');
       btn.disabled = true;
-      btn.innerHTML = '<span>FORKING 30 REAL-TIME UNIVERSES...</span> ⚡';
+      btn.innerHTML = '<span>Forking 30 Universes...</span>';
 
       document.getElementById('statPassed').innerText = '0';
       document.getElementById('statHealed').innerText = '0';
@@ -907,7 +918,7 @@
           renderSynthesis(finalResult.synthesizedPlan);
           eventSource.close();
           btn.disabled = false;
-          btn.innerHTML = '<span>FORK 30 PARALLEL UNIVERSES</span> 🚀';
+          btn.innerHTML = '<span>Fork 30 Parallel Universes</span>';
         });
 
         eventSource.onerror = (err) => {
@@ -928,7 +939,7 @@
           body: JSON.stringify({ command })
         });
         const json = await response.json();
-        
+
         if (json.success) {
           const data = json.data;
           data.results.forEach(r => {
@@ -943,7 +954,7 @@
         alert("Error running simulation: " + err.message);
       } finally {
         btn.disabled = false;
-        btn.innerHTML = '<span>FORK 30 PARALLEL UNIVERSES</span> 🚀';
+        btn.innerHTML = '<span>Fork 30 Parallel Universes</span>';
       }
     }
 
@@ -998,7 +1009,7 @@
           body: JSON.stringify({ taskCommand: command })
         });
         const data = await res.json();
-        alert(`🚀 NITROCLOUD DEPLOYMENT SUCCESSFUL!\n\nDeploy ID: ${data.deployId}\nStatus: ${data.status}\n\n100% verified production execution plan is now live across edge nodes.`);
+        alert(`Deployment successful.\n\nDeploy ID: ${data.deployId}\nStatus: ${data.status}\n\nVerified production execution plan is now live across edge nodes.`);
       } catch (err) {
         alert("Deployment error: " + err.message);
       }

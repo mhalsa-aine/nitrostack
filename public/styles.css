@@ -1,15 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Outfit:wght@300;400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --bg-dark: #07090e;
-  --panel-bg: rgba(18, 24, 38, 0.75);
-  --border-color: rgba(56, 189, 248, 0.2);
-  --accent-cyan: #38bdf8;
-  --accent-purple: #c084fc;
-  --accent-green: #4ade80;
-  --accent-red: #f87171;
-  --text-main: #f1f5f9;
-  --text-muted: #94a3b8;
+  /* Light theme: white background, dark/brown text */
+  --bg-dark: #ffffff;
+  --bg-page: #faf9f7;
+  --panel-bg: #ffffff;
+  --border-color: rgba(60, 45, 35, 0.12);
+
+  /* Interactive / link color */
+  --link-blue: #2563eb;
+  --link-blue-hover: #1d4ed8;
+
+  /* Accent family (kept variable names for JS/markup compatibility) */
+  --accent-cyan: #2563eb;      /* primary link/interactive blue */
+  --accent-purple: #7c5cbf;    /* readable soft purple for labels */
+  --accent-green: #16a34a;     /* success text */
+  --accent-red: #c2555a;       /* error/fail text */
+
+  /* Pastel icon chip backgrounds */
+  --icon-blue-bg: #dbeafe;
+  --icon-purple-bg: #ede9fe;
+  --icon-green-bg: #dcfce7;
+  --icon-red-bg: #fde0e0;
+
+  --text-main: #2b2320;        /* near-black, warm */
+  --text-muted: #7a6a5f;       /* brown-gray */
 }
 
 * {
@@ -19,12 +34,9 @@
 }
 
 body {
-  background: var(--bg-dark);
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(192, 132, 252, 0.12) 0px, transparent 50%);
+  background: var(--bg-page);
   color: var(--text-main);
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Inter', -apple-system, sans-serif;
   min-height: 100vh;
   padding: 24px;
 }
@@ -40,28 +52,39 @@ body {
   justify-content: space-between;
   align-items: center;
   background: var(--panel-bg);
-  backdrop-filter: blur(16px);
   border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 20px 30px;
   margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(60, 45, 35, 0.06);
 }
 
 .brand-title {
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 800;
-  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--text-main);
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
+.brand-title span {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: var(--icon-blue-bg);
+  color: var(--link-blue);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-style: normal;
+}
+
 .pill-badge {
-  background: rgba(56, 189, 248, 0.15);
-  border: 1px solid var(--accent-cyan);
-  color: var(--accent-cyan);
+  background: var(--icon-blue-bg);
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  color: var(--link-blue);
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 13px;
@@ -81,20 +104,33 @@ body {
 
 .panel {
   background: var(--panel-bg);
-  backdrop-filter: blur(16px);
   border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 24px;
+  box-shadow: 0 1px 3px rgba(60, 45, 35, 0.06);
 }
 
 .panel-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   margin-bottom: 16px;
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--accent-cyan);
+  color: var(--text-main);
+}
+
+.panel-title span {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: var(--icon-purple-bg);
+  color: var(--accent-purple);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-style: normal;
 }
 
 /* Prompt Box Input */
@@ -106,36 +142,35 @@ body {
 
 .input-field {
   flex: 1;
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: var(--bg-page);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   padding: 14px 18px;
-  color: #fff;
+  color: var(--text-main);
   font-size: 15px;
   outline: none;
   transition: all 0.2s;
 }
 
 .input-field:focus {
-  border-color: var(--accent-cyan);
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+  border-color: var(--link-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 .btn-execute {
-  background: linear-gradient(135deg, #0284c7, #7c3aed);
+  background: var(--link-blue);
   border: none;
-  color: white;
-  font-weight: 700;
+  color: #ffffff;
+  font-weight: 600;
   padding: 14px 28px;
   border-radius: 10px;
   cursor: pointer;
-  font-size: 15px;
-  transition: transform 0.2s, opacity 0.2s;
+  font-size: 14px;
+  transition: background 0.2s;
 }
 
 .btn-execute:hover {
-  transform: translateY(-2px);
-  opacity: 0.95;
+  background: var(--link-blue-hover);
 }
 
 /* 30-Universe Grid Cards */
@@ -148,8 +183,8 @@ body {
 }
 
 .u-card {
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-page);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 10px 12px;
   font-size: 12px;
@@ -157,28 +192,29 @@ body {
 }
 
 .u-card.pass { border-left: 4px solid var(--accent-green); }
-.u-card.fail { border-left: 4px solid var(--accent-red); background: rgba(248, 113, 113, 0.1); }
+.u-card.fail { border-left: 4px solid var(--accent-red); background: var(--icon-red-bg); }
 
 .u-header {
   display: flex;
   justify-content: space-between;
   font-weight: 700;
   margin-bottom: 4px;
+  color: var(--text-main);
 }
 
 .u-name { color: var(--text-muted); font-size: 11px; }
 
-/* Thought Stream Terminal Console */
+/* Thought Stream Terminal Console — kept dark intentionally, like a code/terminal panel on a light page */
 .thought-console {
-  background: #020617;
-  border: 1px solid #1e293b;
+  background: #1c1a17;
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   padding: 16px;
   font-family: 'Fira Code', monospace;
   font-size: 13px;
   height: 280px;
   overflow-y: auto;
-  color: #cbd5e1;
+  color: #e8e2da;
 }
 
 .thought-entry {
@@ -186,18 +222,18 @@ body {
   line-height: 1.5;
 }
 
-.thought-step { color: var(--accent-purple); font-weight: 600; }
-.thought-title { color: var(--accent-cyan); }
+.thought-step { color: #b39ddb; font-weight: 600; }
+.thought-title { color: #7ab8f5; }
 
-/* Code Diff Box */
+/* Code Diff Box — same dark terminal treatment */
 .code-diff-box {
-  background: #020617;
+  background: #1c1a17;
   border: 1px solid rgba(74, 222, 128, 0.3);
   border-radius: 10px;
   padding: 16px;
   font-family: 'Fira Code', monospace;
   font-size: 13px;
-  color: #4ade80;
+  color: #86efac;
   max-height: 300px;
   overflow-y: auto;
   white-space: pre-wrap;
