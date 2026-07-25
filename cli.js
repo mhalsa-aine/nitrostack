@@ -5,7 +5,8 @@
  * Author: Krushmika S M (Terminal UI Specialist & Matrix Visualizer Lead)
  */
 
-import { MultiverseEngine } from "./multiverse-engine.js";
+import pkg from "./multiverse-engine.js";
+const { MultiverseEngine } = pkg;
 import readline from "readline";
 
 // ANSI Color Constants for Terminal UI
