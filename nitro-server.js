@@ -1,86 +1,136 @@
 /**
- * MultiverseOps - NitroStack Microservice Server & Cloud Deployment Manager
- * Author: Niharika (NitroStack Microservice & Cloud Deploy)
+ * NITRO-SERVER.JS (Niharika's Module)
+ * NitroStack Backend Serverless Microservice API & Web Application Host
+ * 
+ * Exposes:
+ * 1. POST /api/multiverse/process (supports domainFilter)
+ * 2. GET /api/multiverse/stream (Real-Time Server-Sent Events SSE streaming)
+ * 3. POST /api/multiverse/export-audit (Generates & serves HTML Audit Certificate)
  */
 
-import express from "express";
-import http from "http";
-import path from "path";
-import { fileURLToPath } from "url";
-import { MultiverseEngine } from "./multiverse-engine.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const express = require('express');
+const path = require('path');
+const MultiverseEngine = require('./multiverse-engine');
+const { MCP_TOOLS } = require('./mcp-server');
 
 const app = express();
-const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve NitroStudio static html
-app.get(["/", "/studio"], (req, res) => {
-  res.sendFile(path.join(__dirname, "nitro-studio.html"));
-});
+const engine = new MultiverseEngine();
 
-// System Status API
-app.get("/api/status", (req, res) => {
+// Health Check API
+app.get('/api/health', (req, res) => {
   res.json({
-    name: "MultiverseOps NitroStack Microservice",
-    version: "1.0.0",
-    engine: "30-Universe Speculative Parallel Agentic Execution Engine",
-    status: "HEALTHY",
-    edgeNodes: ["us-east-nitro", "eu-central-nitro", "ap-south-nitro"],
-    universeCount: 30,
-    mcpToolsLoaded: 30
+    status: "ONLINE",
+    service: "MultiverseOps NitroStack Backend",
+    protocol: "Model Context Protocol (MCP) JSON-RPC v2.0",
+    activeUniverses: 30,
+    timestamp: new Date().toISOString()
   });
 });
 
-// Run 30-Universe Simulation API
-app.post("/api/simulate", async (req, res) => {
+// MCP Tools Metadata API
+app.get('/api/mcp/tools', (req, res) => {
+  res.json({ tools: MCP_TOOLS });
+});
+
+// Process Arbitrary Agentic User Request (supports domainFilter)
+app.post('/api/multiverse/process', async (req, res) => {
   try {
-    const { commandPrompt } = req.body;
-    const prompt = commandPrompt || "Deploy global enterprise infrastructure & pricing update";
-    
-    const engine = new MultiverseEngine();
-    const summary = await engine.executeSpeculativeMatrix(prompt);
-    
-    res.json({ success: true, summary });
+    const { prompt, domainFilter } = req.body;
+    const userPrompt = prompt || "Deploy global enterprise infrastructure & pricing update";
+    const result = await engine.processUserRequest(userPrompt, { domainFilter: domainFilter || 'ALL' });
+    res.json(result);
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
-// NitroCloud Deploy Simulation API
-app.post("/api/deploy", (req, res) => {
-  const deploymentId = `NITRO-DEP-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
-  res.json({
-    success: true,
-    deploymentId,
-    target: "NitroCloud Global Edge Mesh",
-    status: "DEPLOYED",
-    deployedAt: new Date().toISOString(),
-    logs: [
-      "[NitroCloud CLI] Bundling 30 MCP Universe Tools...",
-      "[NitroCloud CLI] Optimizing V8 runtime & connection pools...",
-      "[NitroCloud CLI] Uploading edge workers to 12 global regions...",
-      "[NitroCloud CLI] Deployment successful! Target URL: https://multiverse-ops.nitrocloud.app"
-    ]
-  });
+// Backward compatibility route for studio
+app.post('/api/multiverse/simulate', async (req, res) => {
+  try {
+    const { command, domainFilter } = req.body;
+    const userPrompt = command || "Deploy global enterprise infrastructure & pricing update";
+    const result = await engine.processUserRequest(userPrompt, { domainFilter: domainFilter || 'ALL' });
+    
+    // Map to studio format
+    res.json({
+      results: result.universeResults.all.map(u => ({
+        id: u.universeId,
+        domain: u.domain,
+        name: u.name,
+        status: u.status
+      })),
+      successCount: result.universeResults.succeeded.length,
+      failureCount: result.universeResults.failed.length,
+      synthesis: {
+        certaintyScore: result.certaintyScore,
+        patches: result.remediationPatches
+      },
+      auditCertificate: result.auditCertificate
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
-// Check if CLI triggered --deploy argument directly
-if (process.argv.includes("--deploy")) {
-  console.log("\n🚀 [NitroCloud CLI] Deploying MultiverseOps to NitroCloud Edge...");
-  console.log("✔ Bundling 30 MCP Universe Tools");
-  console.log("✔ Uploading edge worker nodes to 12 regions");
-  console.log("🎉 Deployed successfully to: https://multiverse-ops.nitrocloud.app\n");
-  process.exit(0);
-}
+// Real-Time Server-Sent Events (SSE) Streaming Endpoint
+app.get('/api/multiverse/stream', async (req, res) => {
+  const userPrompt = req.query.prompt || "Deploy global enterprise infrastructure & pricing update";
+  const domainFilter = req.query.domainFilter || "ALL";
 
-server.listen(PORT, () => {
-  console.log("\n========================================================================");
-  console.log(` 🌌 MultiverseOps NitroStack Microservice running on http://localhost:${PORT}`);
-  console.log(` 🎨 Open NitroStudio Web Control Console: http://localhost:${PORT}/studio`);
-  console.log("========================================================================\n");
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+
+  const sendEvent = (event, data) => {
+    res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+  };
+
+  try {
+    sendEvent('start', { prompt: userPrompt, domainFilter });
+
+    const result = await engine.processUserRequest(userPrompt, {
+      domainFilter,
+      onThoughtUpdate: (thought) => {
+        sendEvent('thought', thought);
+      },
+      onUniverseProgress: (universeResult) => {
+        sendEvent('universe', universeResult);
+      }
+    });
+
+    sendEvent('complete', result);
+    res.end();
+  } catch (err) {
+    sendEvent('error', { message: err.message });
+    res.end();
+  }
+});
+
+// Export Enterprise Audit Certificate API (Serves HTML Certificate)
+app.post('/api/multiverse/export-audit', async (req, res) => {
+  try {
+    const { prompt, domainFilter } = req.body;
+    const userPrompt = prompt || "Deploy global enterprise infrastructure & pricing update";
+    const result = await engine.processUserRequest(userPrompt, { domainFilter: domainFilter || 'ALL' });
+    
+    res.setHeader('Content-Type', 'text/html');
+    res.send(result.auditCertificate.auditReportHtml);
+  } catch (error) {
+    res.status(500).send(`<h2>Audit Export Failed: ${error.message}</h2>`);
+  }
+});
+
+// Fallback Route for Web Interface
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.listen(PORT, () => {
+  console.log(`\n🚀 NitroStack Serverless Microservice Running on http://localhost:${PORT}`);
+  console.log(`💻 Modern Web Application UI available at http://localhost:${PORT}\n`);
 });

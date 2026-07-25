@@ -1,27 +1,24 @@
 {
   "name": "multiverse-ops",
   "version": "1.0.0",
-  "description": "30-Universe Speculative Parallel Agentic Execution Engine for Enterprise IT & Automation",
-  "main": "cli.js",
-  "type": "module",
+  "description": "Enterprise AI & Workplace Automation - 30-Universe Speculative Parallel Agentic Execution Engine",
+  "main": "nitro-server.js",
   "scripts": {
-    "start": "node cli.js",
-    "server": "node nitro-server.js",
-    "studio": "node nitro-server.js",
-    "deploy": "node nitro-server.js --deploy"
+    "start": "node nitro-server.js",
+    "cli": "node cli.js",
+    "studio": "node nitro-server.js"
   },
   "keywords": [
     "mcp",
     "agentic-ai",
     "multiverse",
-    "devops",
     "nitrostack",
-    "nitrocloud"
+    "automation"
   ],
   "author": "Team MultiverseOps (Mhalsa, Krushmika, Pavitra, Niharika)",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.19.2",
-    "ws": "^8.17.0"
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
   }
 }
