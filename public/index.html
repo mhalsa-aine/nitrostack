@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MultiverseOps - 30-Universe Enterprise Agentic AI Engine</title>
+  <title>MultiverseOps - Dynamic Enterprise Agentic AI Engine</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,17 +13,22 @@
       <div class="brand-title">
         <span>🌌</span> MultiverseOps Engine
       </div>
-      <div class="pill-badge">Model Context Protocol (MCP) JSON-RPC v2.0</div>
+      <div class="pill-badge">Google Gemini 2.5 LLM + Model Context Protocol (MCP)</div>
     </header>
 
     <!-- Top Command Input -->
     <div class="panel" style="margin-bottom: 24px;">
-      <div class="panel-title">⚡ Issue Enterprise Agentic Command</div>
+      <div class="panel-title">⚡ Ask Any Enterprise Question or Issue</div>
       <div class="prompt-box">
         <input type="text" id="promptInput" class="input-field" 
-               value="Deploy global enterprise infrastructure & pricing update" 
-               placeholder="Type any enterprise request or outage issue here...">
+               value="How do I secure S3 bucket permissions against data leaks and GDPR violations?" 
+               placeholder="Type any enterprise question or request here...">
         <button class="btn-execute" onclick="executeAgent()">Execute 30-Universe Speculation</button>
+      </div>
+      
+      <!-- Direct LLM Solution Box -->
+      <div id="directAnswerBox" style="margin-top: 15px;">
+        <p style="color: var(--text-muted); font-size: 14px;">Type any prompt above and click Execute to see Gemini LLM synthesize a direct architectural solution.</p>
       </div>
     </div>
 
@@ -49,14 +54,14 @@
           <h4 style="color: var(--text-muted); font-size: 13px; margin-bottom: 8px;">LIVE AGENT THOUGHT STREAM:</h4>
           <div id="thoughtConsole" class="thought-console">
             <div class="thought-entry">
-              <span class="thought-step">[IDLE]</span> Agentic SDK initialized and ready. Type a prompt above.
+              <span class="thought-step">[IDLE]</span> Gemini LLM Agentic SDK initialized and ready. Type a prompt above.
             </div>
           </div>
         </div>
 
         <div>
-          <h4 style="color: var(--text-muted); font-size: 13px; margin-bottom: 8px;">AUTO-SYNTHESIZED REMEDIATION SCRIPT:</h4>
-          <pre id="codeDiffBox" class="code-diff-box">// Remediated production script will be generated here...</pre>
+          <h4 style="color: var(--text-muted); font-size: 13px; margin-bottom: 8px;">TAILORED PRODUCTION CODE SCRIPT:</h4>
+          <pre id="codeDiffBox" class="code-diff-box">// Custom production code tailored to your prompt will be generated here...</pre>
         </div>
       </div>
     </div>

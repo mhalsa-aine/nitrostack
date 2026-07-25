@@ -12,20 +12,25 @@ const MultiverseEngine = require('./multiverse-engine');
 const engine = new MultiverseEngine();
 
 async function runSimulation(userPrompt) {
-  console.log(chalk.yellow(`\n[AGENTIC AI TARGET]: `) + chalk.white.bold(`"${userPrompt}"`));
+  console.log(chalk.yellow(`\n[USER QUESTION / REQUEST]: `) + chalk.white.bold(`"${userPrompt}"`));
   console.log(chalk.gray(`[PROTOCOL]: Model Context Protocol (MCP) JSON-RPC v2.0`));
-  console.log(chalk.gray(`[RUNTIME]: NitroStack Microservice Framework\n`));
+  console.log(chalk.gray(`[AI ENGINE]: Google Gemini 2.5 LLM + NitroStack Microservice Runtime\n`));
 
-  const spinner = ora(chalk.magenta('Agentic SDK: Forking 30 Parallel Speculative Universes...')).start();
+  const spinner = ora(chalk.magenta('Calling Gemini API & Forking 30 Parallel Speculative Universes...')).start();
 
-  const summary = await engine.processUserRequest(userPrompt, (thought) => {
-    // Live thought updates
-  });
+  const summary = await engine.processUserRequest(userPrompt);
 
-  spinner.succeed(chalk.green(`Executed 30 Speculative Universes in ${summary.executionTimeMs}ms!`));
+  spinner.succeed(chalk.green(`Analysis Completed in ${summary.executionTimeMs}ms!`));
   console.log('');
 
-  // 30-Universe Matrix Output Table
+  // 1. Direct LLM Answer Section
+  console.log(chalk.yellow.bold(`====================================================================================================`));
+  console.log(chalk.cyan.bold(` 💡 DIRECT LLM SOLUTION & ARCHITECTURAL ANSWER`));
+  console.log(chalk.yellow.bold(`====================================================================================================`));
+  console.log(chalk.white(summary.directAnswer));
+  console.log('');
+
+  // 2. 30-Universe Matrix Table
   const table = new Table({
     head: [
       chalk.cyan('Univ & Domain'), chalk.cyan('Status'),
@@ -53,21 +58,22 @@ async function runSimulation(userPrompt) {
 
   console.log(table.toString());
 
+  // 3. Remediated Code & Synthesis
   console.log(chalk.yellow.bold(`\n====================================================================================================`));
-  console.log(chalk.cyan.bold(` 🧠 QUANTUM SYNTHESIS & AGENTIC REMEDIATION CODE`));
+  console.log(chalk.cyan.bold(` 🧠 QUANTUM SYNTHESIS & DYNAMIC REMEDIATION CODE`));
   console.log(chalk.yellow.bold(`====================================================================================================`));
   console.log(chalk.white(` • Simulation Certainty Score: `) + chalk.green.bold(summary.certaintyScore));
   console.log(chalk.white(` • Universes Succeeded:      `) + chalk.green.bold(`${summary.universeResults.succeeded.length}/30`));
   console.log(chalk.white(` • Failure Modes Intercepted: `) + chalk.red.bold(`${summary.universeResults.failed.length}`));
   console.log('');
-  console.log(chalk.magenta.bold(` 🛠️ AUTO-SYNTHESIZED REMEDIATION PATCHES:`));
+  console.log(chalk.magenta.bold(` 🛠️ DYNAMIC REMEDIATION PATCHES FOR YOUR PROMPT:`));
 
-  summary.remediationCode.patches.forEach((patch, index) => {
+  summary.remediationPatches.forEach((patch, index) => {
     console.log(chalk.green(`   ${index + 1}. ${patch}`));
   });
 
-  console.log(chalk.gray(`\n[GENERATED REMEDIATION CODE CODE SCRIPT]:`));
-  console.log(chalk.cyan(summary.remediationCode.codeSnippet));
+  console.log(chalk.gray(`\n[TAILORED REMEDIATION CODE SCRIPT]:`));
+  console.log(chalk.cyan(summary.customCodeSnippet));
 
   console.log('');
   console.log(chalk.bgGreen.black.bold(` [REALITY EXECUTION] `) + chalk.green.bold(` Executing Optimized Plan via Production MCP Gateway... ✅ 100% SUCCESS IN PRODUCTION!`));
@@ -80,11 +86,11 @@ function startREPL() {
 ====================================================================================================
                🌌 MULTIVERSE-OPS: INTERACTIVE AGENTIC AI TERMINAL CONSOLE 🌌
 ====================================================================================================
-Type any enterprise request or issue below (or type 'exit' to quit).
+Type any enterprise question or request below (or type 'exit' to quit).
 Examples:
-  - "Offboard employee John Doe and revoke cloud access"
-  - "Migrate Postgres database to v16 and sync regional pricing"
-  - "Fix Stripe payment webhook failures and database table locks"
+  - "How do I secure S3 bucket permissions against data leaks?"
+  - "My serverless function is throwing a 504 gateway timeout on AWS Lambda"
+  - "How do I reconcile employee payroll discrepancies in NetSuite?"
 ====================================================================================================
 `));
 
