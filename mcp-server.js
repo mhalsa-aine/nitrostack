@@ -20,13 +20,13 @@ class MCPServer {
       return { jsonrpc: "2.0", result: { tools: this.tools }, id };
     }
     if (method === "tools/call") {
-      const { name, arguments: args, universeId } = params;
-      return { jsonrpc: "2.0", result: this.executeToolInUniverse(name, args, universeId), id };
+      const { name, arguments: args, universeId, isThreat, dynamicErr } = params;
+      return { jsonrpc: "2.0", result: this.executeToolInUniverse(name, args, universeId, isThreat, dynamicErr), id };
     }
     return { jsonrpc: "2.0", error: { code: -32601, message: "Method not found" }, id };
   }
 
-  executeToolInUniverse(toolName, args, universeId) {
+  executeToolInUniverse(toolName, args, universeId, isThreat = false, dynamicErr = null) {
     const universe = this.universes.find(u => u.id === universeId);
     
     // Check if custom tool handler exists in Pavitra's module
@@ -37,15 +37,19 @@ class MCPServer {
       executionResult = handler(args, universe);
     }
 
-    if (universe && universe.fail) {
+    // Determine failure dynamically based on prompt-driven threat analysis or universe default
+    const shouldFail = isThreat || (universe && universe.fail);
+    const failureReason = dynamicErr || (universe ? universe.err : "Execution Exception");
+
+    if (shouldFail) {
       return {
         status: "FAILURE",
-        universeId: universe.id,
-        domain: universe.domain,
-        code: universe.code,
-        name: universe.name,
-        error: universe.err || (executionResult ? executionResult.error : "Execution Exception"),
-        detail: executionResult ? executionResult.detail : universe.simulatedFailure,
+        universeId: universe ? universe.id : universeId,
+        domain: universe ? universe.domain : "General",
+        code: universe ? universe.code : "ERR",
+        name: universe ? universe.name : "Stress Exception",
+        error: failureReason,
+        detail: executionResult ? executionResult.detail : (universe ? universe.simulatedFailure : failureReason),
         toolCalled: toolName,
         timestamp: new Date().toISOString()
       };

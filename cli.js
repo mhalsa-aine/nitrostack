@@ -3,11 +3,11 @@
 /**
  * MultiverseOps - Windows CMD UI & Matrix Visualizer
  * Author: Krushmika S M (Terminal UI Specialist & Matrix Visualizer Lead)
+ * Updated with Explainable AI (XAI) & Dynamic 2-Phase Re-Simulation
  */
 
-import pkg from "./multiverse-engine.js";
-const { MultiverseEngine } = pkg;
-import readline from "readline";
+const readline = require("readline");
+const MultiverseEngine = require("./multiverse-engine.js");
 
 // ANSI Color Constants for Terminal UI
 const COLORS = {
@@ -27,10 +27,10 @@ const COLORS = {
 };
 
 const PRESET_COMMANDS = [
-  { id: 1, name: "🚀 Enterprise Infrastructure & Pricing Rollout", cmd: "Deploy global enterprise infrastructure & pricing update" },
-  { id: 2, name: "🗄️ Core Database Migration & Schema Patch", cmd: "Migrate multi-region PostgreSQL clusters to v16 with zero lock-time" },
-  { id: 3, name: "💳 Global Flash Sale Payment & Inventory Surge", cmd: "Process 50,000 concurrent payment transactions & apply 20% discount cap" },
-  { id: 4, name: "👥 Bulk Offboarding & Zero-Trust SaaS Revocation", cmd: "Execute automated offboarding for 500 departing enterprise employees" }
+  { id: 1, name: "🛡️ S3 Security Audit: PII Data Leak & GDPR Sovereignty", cmd: "How do I secure AWS S3 bucket permissions against data leaks, prompt injection, and GDPR violations?" },
+  { id: 2, name: "🗄️ Core Database Migration & Schema Drift Patch", cmd: "Migrate production customer orders table schema from PostgreSQL to EU Cloud database cluster without table locks or schema column drift." },
+  { id: 3, name: "💳 Global FinOps Accounting & SOX Reconciliation", cmd: "Reconcile daily enterprise transaction ledgers in NetSuite and apply end-of-month discount rules." },
+  { id: 4, name: "👥 Zero-Trust SaaS Offboarding & 2-Phase Commit Lock", cmd: "Offboard terminated employees from Google Workspace, Slack, Okta, and GitHub directories immediately." }
 ];
 
 function printBanner() {
@@ -39,8 +39,7 @@ function printBanner() {
   console.log(`  ==================================================================================`);
   console.log(`   🌌 MULTIVERSE-OPS : 30-UNIVERSE SPECULATIVE PARALLEL AGENTIC EXECUTION ENGINE   `);
   console.log(`  ==================================================================================${COLORS.reset}`);
-  console.log(`  ${COLORS.dim}Lead Developer: Krushmika S M (Terminal UI Specialist & Matrix Visualizer Lead)${COLORS.reset}`);
-  console.log(`  ${COLORS.dim}Core Engine: Mhalsa | MCP Security: Pavitra | Web Studio: Niharika${COLORS.reset}\n`);
+  console.log(`  ${COLORS.dim}Lead Developer: Krushmika S M | Core Engine: Mhalsa | MCP Security: Pavitra | Web Studio: Niharika${COLORS.reset}\n`);
 }
 
 function printProgressBar(current, total = 30) {
@@ -56,20 +55,21 @@ function printProgressBar(current, total = 30) {
 function printMatrixGrid(completedMap) {
   console.log(`  ${COLORS.bright}${COLORS.magenta}--- 30-UNIVERSE VIRTUAL AGENT MATRIX SIMULATION ---${COLORS.reset}\n`);
   
-  const ids = Array.from({ length: 30 }, (_, i) => `U${String(i + 1).padStart(2, "0")}`);
+  const ids = Array.from({ length: 30 }, (_, i) => i + 1);
   let line = "   ";
   
   ids.forEach((id, idx) => {
     const item = completedMap.get(id);
-    let badge = `${COLORS.dim}[${id}: WAITING]${COLORS.reset}`;
+    const idStr = `U${String(id).padStart(2, "0")}`;
+    let badge = `${COLORS.dim}[${idStr}: WAITING]${COLORS.reset}`;
     
     if (item) {
-      if (item.status === "PASSED") {
-        badge = `${COLORS.green}[${id}:  PASSED]${COLORS.reset}`;
-      } else if (item.status === "MITIGATED") {
-        badge = `${COLORS.yellow}[${id}: MITIGATE]${COLORS.reset}`;
+      if (item.status === "SUCCESS") {
+        badge = `${COLORS.green}[${idStr}:  PASSED]${COLORS.reset}`;
+      } else if (item.status === "PATCHED") {
+        badge = `${COLORS.yellow}[${idStr}: PATCHED]${COLORS.reset}`;
       } else {
-        badge = `${COLORS.red}[${id}:  FAILED ]${COLORS.reset}`;
+        badge = `${COLORS.red}[${idStr}: THREAT!]${COLORS.reset}`;
       }
     }
 
@@ -133,68 +133,63 @@ async function main() {
   const engine = new MultiverseEngine();
   const completedMap = new Map();
 
-  // Execute with real-time matrix updates
-  const summary = await engine.executeSpeculativeMatrix(targetCommand, (universeResult) => {
-    completedMap.set(universeResult.universeId, universeResult);
-    // Clear screen redraw cleanly to avoid line bleed in PowerShell
-    console.clear();
-    printBanner();
-    console.log(`  ${COLORS.bright}🎯 Enterprise Target Command:${COLORS.reset} ${COLORS.cyan}"${targetCommand}"${COLORS.reset}`);
-    console.log(`  ${COLORS.dim}Forking 30 speculative parallel sub-agents across NitroCloud edge workers...${COLORS.reset}\n`);
-    printMatrixGrid(completedMap);
+  const summary = await engine.processUserRequest(targetCommand, {
+    onUniverseProgress: (universeResult) => {
+      completedMap.set(universeResult.universeId, universeResult);
+    }
   });
 
   // Final Matrix View
   console.clear();
   printBanner();
   console.log(`  ${COLORS.bright}🎯 Enterprise Target Command:${COLORS.reset} ${COLORS.cyan}"${targetCommand}"${COLORS.reset}\n`);
+  
+  // Fill matrix with final universe status
+  summary.universeResults.all.forEach(u => completedMap.set(u.universeId, u));
   printMatrixGrid(completedMap);
 
-  // Render Quantum Remediated Execution Summary Box
-  console.log(`  ${COLORS.bright}${COLORS.cyan}+----------------------------------------------------------------------------------+`);
-  console.log(`  | 🌌 QUANTUM SYNTHESIS & REMEDIATION PLAN SUMMARY                                  |`);
-  console.log(`  +----------------------------------------------------------------------------------+${COLORS.reset}`);
-  console.log(`   * Safety Index:        ${COLORS.bright}${COLORS.green}${summary.remediatedPlan.synthesizedSafetyIndex}${COLORS.reset}`);
-  console.log(`   * Simulation Time:     ${COLORS.yellow}${summary.totalDurationMs} ms${COLORS.reset} (30 Parallel Sub-Agents)`);
-  console.log(`   * Universes Passed:    ${COLORS.green}${summary.passedCount} / 30${COLORS.reset}`);
-  console.log(`   * Universes Mitigated: ${COLORS.yellow}${summary.mitigatedCount} / 30${COLORS.reset} (Defensive MCP Auto-Patched)`);
-  console.log(`   * Failure Vulnerability:${COLORS.red}${summary.failedCount}${COLORS.reset} detected & remediated`);
-  console.log(`   * Active MCP Patches:  ${COLORS.cyan}${summary.activePatches.length} Dynamic Hot-Patches Generated${COLORS.reset}\n`);
+  // 1. Direct LLM Answer
+  console.log(`  ${COLORS.bright}${COLORS.cyan}==================================================================================`);
+  console.log(`   💡 GEMINI LLM DIRECT ARCHITECTURAL SOLUTION`);
+  console.log(`  ==================================================================================${COLORS.reset}`);
+  console.log(`  ${summary.directAnswer.replace(/\n/g, '\n  ')}\n`);
 
-  // Domain Breakdown Table
-  console.log(`  ${COLORS.bright}${COLORS.magenta}--- DOMAIN VULNERABILITY BREAKDOWN ---${COLORS.reset}`);
-  Object.entries(summary.domainBreakdown).forEach(([domain, stats]) => {
-    const health = stats.failed === 0 ? `${COLORS.green}SECURE${COLORS.reset}` : `${COLORS.yellow}REMEDIATED${COLORS.reset}`;
-    console.log(`   • ${domain.padEnd(42, " ")} | Status: ${health} | Risk: ${stats.maxRisk}/100`);
-  });
-  console.log("");
-
-  // Print Synthesized Execution Plan Stages
-  console.log(`  ${COLORS.bright}${COLORS.cyan}--- SYNTHESIZED 100% VERIFIED PRODUCTION PLAN ---${COLORS.reset}`);
-  summary.remediatedPlan.stages.forEach((stage) => {
-    console.log(`   ${COLORS.bright}${COLORS.yellow}[STAGE ${stage.stage}] ${stage.title}${COLORS.reset}`);
-    stage.actions.forEach((act) => {
-      console.log(`      ✓ ${act}`);
-    });
-  });
-  console.log("");
-
-  // Code Patches Sample
-  if (summary.activePatches.length > 0) {
-    console.log(`  ${COLORS.bright}${COLORS.green}--- SYNTHESIZED MCP HOT-PATCH SAMPLE ---${COLORS.reset}`);
-    const sample = summary.activePatches.slice(0, 2);
-    sample.forEach(p => {
-      console.log(`   ${COLORS.cyan}// [Patch ${p.universeId}:${p.code}] ${p.name}${COLORS.reset}`);
-      console.log(`   ${COLORS.dim}${p.patch}${COLORS.reset}\n`);
+  // 2. Transparent Explainable AI (XAI) Decision Breakdown
+  if (summary.xaiBreakdown && summary.xaiBreakdown.length > 0) {
+    console.log(`  ${COLORS.bright}${COLORS.magenta}==================================================================================`);
+    console.log(`   🧠 TRANSPARENT EXPLAINABLE AI (XAI) DECISION BREAKDOWN (${summary.xaiBreakdown.length} Threat Vectors Intercepted)`);
+    console.log(`  ==================================================================================${COLORS.reset}`);
+    
+    summary.xaiBreakdown.forEach((item, index) => {
+      console.log(`  ${COLORS.bright}${COLORS.yellow}[${index + 1}] Universe U${String(item.universeId).padStart(2, '0')} (${item.domain}: ${item.name})${COLORS.reset}`);
+      console.log(`      ${COLORS.red}• Intercepted Threat:${COLORS.reset} ${item.threatReason}`);
+      console.log(`      ${COLORS.green}• Agentic MCP Action:${COLORS.reset} ${item.agenticPatchApplied}`);
+      console.log(`      ${COLORS.cyan}• Verified Status:   ${COLORS.bright}${item.verifiedStatus}${COLORS.reset}`);
+      console.log(`      ${COLORS.dim}• XAI Explanation:   ${item.xaiExplanation}${COLORS.reset}\n`);
     });
   }
 
-  // Simulated Production Execution
-  console.log(`  ${COLORS.bgGreen} PRODUCTION DISPATCH ${COLORS.reset} ${COLORS.green}Plan ${summary.remediatedPlan.planId} executed successfully on Production (U00). Zero downtime!${COLORS.reset}\n`);
-  console.log(`  ${COLORS.dim}Designed by Krushmika S M | Run NitroStudio Web Console: node nitro-server.js -> http://localhost:3000/studio${COLORS.reset}\n`);
+  // 3. Code Remediation Script
+  console.log(`  ${COLORS.bright}${COLORS.green}==================================================================================`);
+  console.log(`   🛠️ TAILORED PRODUCTION REMEDIATION SCRIPT`);
+  console.log(`  ==================================================================================${COLORS.reset}`);
+  console.log(`  ${COLORS.cyan}${summary.customCodeSnippet.replace(/\n/g, '\n  ')}${COLORS.reset}\n`);
+
+  // 4. Audit Certificate
+  if (summary.auditCertificate) {
+    console.log(`  ${COLORS.yellow}----------------------------------------------------------------------------------`);
+    console.log(`   📜 ENTERPRISE COMPLIANCE AUDIT CERTIFICATE GENERATED`);
+    console.log(`   • Certificate ID:   ${COLORS.bright}${COLORS.green}${summary.auditCertificate.certificateId}${COLORS.reset}`);
+    console.log(`   • SHA-256 Hash:     ${COLORS.dim}${summary.auditCertificate.verificationHash}${COLORS.reset}`);
+    console.log(`   • Post-Patch Score: ${COLORS.bright}${COLORS.green}${summary.certaintyScore}${COLORS.reset}`);
+    console.log(`   • Export HTML URL:  ${COLORS.blue}http://localhost:3000/api/multiverse/export-audit${COLORS.reset}`);
+    console.log(`  ----------------------------------------------------------------------------------\n`);
+  }
+
+  // Final Dispatch Banner
+  console.log(`  ${COLORS.bgGreen} REALITY EXECUTION ${COLORS.reset} ${COLORS.green}Dispatched 100% Remediated Plan via Production MCP Gateway... ✅ SUCCESS IN PRODUCTION!${COLORS.reset}\n`);
 }
 
 main().catch((err) => {
   console.error(`${COLORS.red}Error executing MultiverseOps CLI:${COLORS.reset}`, err);
 });
-
