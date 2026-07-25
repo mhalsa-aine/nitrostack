@@ -139,33 +139,19 @@ async function executeSelfHealedSecurityPlan(bucketName) {
   async runDynamicParallelUniverses(prompt, failureModes) {
     const startTime = Date.now();
     const universes = this.mcpServer.universes;
-    const failIds = [3, 14, 20, 22];
 
-    const promises = universes.map(async (u, idx) => {
+    const promises = universes.map(async (u) => {
+      // Simulate micro-latency across NitroCloud parallel worker nodes
       await new Promise(resolve => setTimeout(resolve, Math.floor(Math.random() * 150) + 30));
       
-      const isFail = failIds.includes(u.id);
-      const failReason = isFail ? (failureModes[idx % failureModes.length] || "Execution Exception") : null;
+      // Execute via Model Context Protocol (MCP) Gateway
+      const mcpResult = this.mcpServer.executeToolInUniverse(
+        "mcp_deploy_microservice",
+        { userPrompt: prompt },
+        u.id
+      );
 
-      if (isFail) {
-        return {
-          universeId: u.id,
-          domain: u.domain,
-          code: u.code,
-          name: u.name,
-          status: "FAILURE",
-          error: failReason
-        };
-      }
-
-      return {
-        universeId: u.id,
-        domain: u.domain,
-        code: u.code,
-        name: u.name,
-        status: "SUCCESS",
-        output: `Executed successfully in Universe #${u.id}`
-      };
+      return mcpResult;
     });
 
     const results = await Promise.all(promises);
