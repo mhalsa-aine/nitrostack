@@ -131,6 +131,5 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`\n🚀 NitroStack Serverless Microservice Running on http://localhost:${PORT}`);
-  console.log(`💻 Modern Web Application UI available at http://localhost:${PORT}\n`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
