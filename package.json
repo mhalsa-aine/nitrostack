@@ -1,0 +1,19 @@
+{
+  "name": "multiverse-ops",
+  "version": "1.0.0",
+  "description": "30-Universe Speculative Parallel Agentic Execution Engine built with MCP, SDK, CLI, and NitroStack",
+  "main": "cli.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node cli.js",
+    "dev": "node nitro-server.js",
+    "simulate": "node cli.js \"Deploy global enterprise infrastructure & pricing update\""
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "cli-table3": "^0.6.3",
+    "commander": "^11.1.0",
+    "express": "^4.18.2",
+    "ora": "^5.4.1"
+  }
+}
