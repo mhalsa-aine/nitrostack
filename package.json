@@ -2,9 +2,21 @@
   "name": "multiverse-ops",
   "version": "1.0.0",
   "description": "Enterprise AI & Workplace Automation - 30-Universe Speculative Parallel Agentic Execution Engine",
-  "main": "nitro-server.js",
+  "main": "mcp-server.js",
+  "bin": {
+    "multiverse-ops": "mcp-server.js"
+  },
+  "mcpServers": {
+    "multiverse-ops": {
+      "command": "node",
+      "args": ["mcp-server.js"]
+    }
+  },
   "scripts": {
+    "dev": "node nitro-server.js",
     "start": "node nitro-server.js",
+    "web": "node nitro-server.js",
+    "mcp": "node mcp-server.js",
     "cli": "node cli.js",
     "studio": "node nitro-server.js"
   },
@@ -19,6 +31,7 @@
   "license": "MIT",
   "dependencies": {
     "@google/genai": "^2.13.0",
+    "@modelcontextprotocol/sdk": "^1.1.0",
     "cors": "^2.8.5",
     "dotenv": "^17.4.2",
     "express": "^4.19.2"
