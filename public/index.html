@@ -7,28 +7,174 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
+
+  <!-- ==================== AUTHENTICATION SCREEN (SIGN IN / SIGN UP) ==================== -->
+  <div id="loginScreen" class="auth-overlay">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-logo">🌌</div>
+        <h2>MultiverseOps Studio</h2>
+        <p class="auth-subtitle">Enterprise Agentic AI & 30-Universe Speculation Engine</p>
+      </div>
+
+      <!-- Auth Navigation Tabs: Sign In vs Create Account -->
+      <div class="auth-tabs">
+        <button type="button" id="tabBtnSignIn" class="auth-tab-btn active" onclick="switchAuthTab('signin')">Sign In</button>
+        <button type="button" id="tabBtnSignUp" class="auth-tab-btn" onclick="switchAuthTab('signup')">Create Account</button>
+      </div>
+
+      <!-- Quick Role Fill Selector Chips (For Sign In) -->
+      <div id="quickRolesPanel" class="quick-roles-panel">
+        <span class="quick-label">⚡ Quick 1-Click Demo Login:</span>
+        <div class="role-chips-grid">
+          <button type="button" class="role-chip active" onclick="quickSelectRole('admin')">
+            <span>👑</span> Enterprise Admin
+          </button>
+          <button type="button" class="role-chip" onclick="quickSelectRole('auditor')">
+            <span>🛡️</span> Security Auditor
+          </button>
+          <button type="button" class="role-chip" onclick="quickSelectRole('devops')">
+            <span>⚡</span> DevOps Engineer
+          </button>
+        </div>
+      </div>
+
+      <!-- Sign In / Sign Up Form -->
+      <form id="authForm" onsubmit="handleAuthSubmit(event)" class="auth-form">
+        <div id="authAlert" class="auth-alert hidden"></div>
+
+        <!-- Full Name (Only visible on Sign Up) -->
+        <div id="nameGroup" class="form-group hidden">
+          <label for="nameInput">Full Name</label>
+          <div class="input-wrapper">
+            <span class="input-icon">👤</span>
+            <input type="text" id="nameInput" class="auth-input" placeholder="e.g. Alex Mercer">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="emailInput">Enterprise Email</label>
+          <div class="input-wrapper">
+            <span class="input-icon">✉️</span>
+            <input type="email" id="emailInput" class="auth-input" value="admin@multiverse.ops" required placeholder="name@company.com">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="passwordInput">Password</label>
+          <div class="input-wrapper">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="passwordInput" class="auth-input" value="admin123" required placeholder="••••••••">
+            <button type="button" class="btn-toggle-pw" onclick="togglePasswordVisibility()">👁️</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="roleSelect">Access Role</label>
+          <select id="roleSelect" class="auth-select">
+            <option value="Enterprise Admin">👑 Enterprise Admin (Full Rights)</option>
+            <option value="Security Auditor">🛡️ Security Auditor (Read & XAI Audit)</option>
+            <option value="DevOps Engineer">⚡ DevOps Engineer (Infrastructure Execution)</option>
+          </select>
+        </div>
+
+        <div id="signInOptions" class="form-options">
+          <label class="checkbox-label">
+            <input type="checkbox" id="rememberMe" checked> Remember session
+          </label>
+          <a href="#" onclick="openForgotPasswordModal()" class="forgot-link">Forgot Password?</a>
+        </div>
+
+        <button type="submit" id="btnAuthSubmit" class="btn-auth-submit">
+          <span>Sign In to MultiverseOps</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <span>Powered by <strong>Google Gemini LLM</strong> & <strong>Model Context Protocol (MCP)</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== FORGOT PASSWORD MODAL ==================== -->
+  <div id="forgotPasswordModal" class="auth-overlay hidden">
+    <div class="auth-card" style="max-width: 420px;">
+      <div class="auth-header">
+        <div class="auth-logo" style="background: var(--icon-purple-bg); color: var(--accent-purple);">🔑</div>
+        <h2>Reset Your Password</h2>
+        <p class="auth-subtitle">Enter your enterprise email to receive a password reset link & code.</p>
+      </div>
+
+      <form onsubmit="handleForgotPasswordSubmit(event)" class="auth-form">
+        <div id="forgotAlert" class="auth-alert hidden"></div>
+
+        <div class="form-group">
+          <label for="forgotEmailInput">Enterprise Email</label>
+          <div class="input-wrapper">
+            <span class="input-icon">✉️</span>
+            <input type="email" id="forgotEmailInput" class="auth-input" required placeholder="name@company.com">
+          </div>
+        </div>
+
+        <button type="submit" id="btnForgotSubmit" class="btn-auth-submit" style="background: var(--accent-purple);">
+          <span>Send Reset Instructions</span>
+          <span class="btn-arrow">→</span>
+        </button>
+        
+        <button type="button" onclick="closeForgotPasswordModal()" class="btn-secondary-close">
+          Back to Sign In
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN DASHBOARD CONTAINER ==================== -->
+  <div id="mainDashboard" class="container hidden">
     <!-- Navbar Header -->
     <header class="navbar">
       <div class="brand-title">
         <span>🌌</span> MultiverseOps Engine
       </div>
-      <div class="pill-badge">Google Gemini 2.5 LLM + Model Context Protocol (MCP)</div>
+
+      <div class="navbar-right">
+        <div class="pill-badge">Google Gemini 2.5 LLM + MCP</div>
+        
+        <!-- Logged-in User Profile Badge -->
+        <div id="userProfileBadge" class="user-badge">
+          <span id="userAvatar" class="user-avatar">👑</span>
+          <div class="user-info">
+            <span id="userName" class="user-name">Mhalsa Aine</span>
+            <span id="userRole" class="user-role">Enterprise Admin</span>
+          </div>
+          <button onclick="handleLogout()" class="btn-logout" title="Sign Out">Sign Out 🚪</button>
+        </div>
+      </div>
     </header>
 
     <!-- Top Command Input -->
     <div class="panel" style="margin-bottom: 24px;">
       <div class="panel-title">⚡ Ask Any Enterprise Question or Issue</div>
+      
       <div class="prompt-box">
         <input type="text" id="promptInput" class="input-field" 
-               value="How do I secure S3 bucket permissions against data leaks and GDPR violations?" 
+               value="check if the warehouse is working or not" 
                placeholder="Type any enterprise question or request here...">
         <button class="btn-execute" onclick="executeAgent()">Execute 30-Universe Speculation</button>
+      </div>
+
+      <!-- Quick Prompt Preset Pills -->
+      <div class="prompt-presets-bar">
+        <span class="preset-label">💡 Quick Presets:</span>
+        <button type="button" class="preset-pill" onclick="fillPromptPreset('check if the warehouse is working or not')">📦 Warehouse & WMS Status</button>
+        <button type="button" class="preset-pill" onclick="fillPromptPreset('How do I secure S3 bucket permissions against data leaks and GDPR violations?')">🛡️ S3 GDPR Security</button>
+        <button type="button" class="preset-pill" onclick="fillPromptPreset('Calculate weekly net profit and reconcile SOX ledgers')">📊 FinOps SOX Ledger</button>
+        <button type="button" class="preset-pill" onclick="fillPromptPreset('Fetch real-time weather telemetry API feeds without HTTP 429 throttling')">📡 Weather Telemetry API</button>
       </div>
       
       <!-- Direct LLM Solution Box -->
       <div id="directAnswerBox" style="margin-top: 15px;">
-        <p style="color: var(--text-muted); font-size: 14px;">Type any prompt above and click Execute to see Gemini LLM synthesize a direct architectural solution.</p>
+        <p style="color: var(--text-muted); font-size: 14px;">Type any prompt above or pick a Quick Preset to see Gemini LLM synthesize a direct architectural solution.</p>
       </div>
     </div>
 

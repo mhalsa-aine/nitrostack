@@ -11,11 +11,11 @@
   --link-blue: #2563eb;
   --link-blue-hover: #1d4ed8;
 
-  /* Accent family (kept variable names for JS/markup compatibility) */
-  --accent-cyan: #2563eb;      /* primary link/interactive blue */
-  --accent-purple: #7c5cbf;    /* readable soft purple for labels */
-  --accent-green: #16a34a;     /* success text */
-  --accent-red: #c2555a;       /* error/fail text */
+  /* Accent family */
+  --accent-cyan: #2563eb;
+  --accent-purple: #7c5cbf;
+  --accent-green: #16a34a;
+  --accent-red: #c2555a;
 
   /* Pastel icon chip backgrounds */
   --icon-blue-bg: #dbeafe;
@@ -23,8 +23,8 @@
   --icon-green-bg: #dcfce7;
   --icon-red-bg: #fde0e0;
 
-  --text-main: #2b2320;        /* near-black, warm */
-  --text-muted: #7a6a5f;       /* brown-gray */
+  --text-main: #2b2320;
+  --text-muted: #7a6a5f;
 }
 
 * {
@@ -41,12 +41,405 @@ body {
   padding: 24px;
 }
 
+.hidden {
+  display: none !important;
+}
+
 .container {
   max-width: 1400px;
   margin: 0 auto;
 }
 
-/* Header Navbar */
+/* ==================== AUTHENTICATION SCREEN STYLES ==================== */
+.auth-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.auth-card {
+  background: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 24px;
+  padding: 36px 40px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(37, 99, 235, 0.08);
+  animation: authFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes authFadeIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.auth-logo {
+  width: 56px;
+  height: 56px;
+  background: var(--icon-blue-bg);
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+}
+
+.auth-header h2 {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.auth-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Auth Navigation Tabs (Sign In vs Create Account) */
+.auth-tabs {
+  display: flex;
+  background: var(--bg-page);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 20px;
+}
+
+.auth-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.auth-tab-btn.active {
+  background: #ffffff;
+  color: var(--link-blue);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+/* Quick Role Select Chips */
+.quick-roles-panel {
+  background: var(--bg-page);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 20px;
+}
+
+.quick-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.role-chips-grid {
+  display: flex;
+  gap: 8px;
+}
+
+.role-chip {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 8px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-main);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s;
+}
+
+.role-chip:hover {
+  border-color: var(--link-blue);
+  background: var(--icon-blue-bg);
+}
+
+.role-chip.active {
+  border-color: var(--link-blue);
+  background: var(--icon-blue-bg);
+  color: var(--link-blue);
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.15);
+}
+
+/* Auth Form */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-alert {
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--icon-red-bg);
+  border: 1px solid rgba(194, 85, 90, 0.3);
+  color: var(--accent-red);
+}
+
+.auth-alert.success-msg {
+  background: var(--icon-green-bg);
+  border-color: rgba(22, 163, 74, 0.3);
+  color: var(--accent-green);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  font-size: 14px;
+}
+
+.auth-input, .auth-select {
+  width: 100%;
+  background: var(--bg-page);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 12px 14px 12px 40px;
+  font-size: 14px;
+  color: var(--text-main);
+  outline: none;
+  transition: all 0.2s;
+}
+
+.auth-select {
+  padding-left: 14px;
+  cursor: pointer;
+}
+
+.auth-input:focus, .auth-select:focus {
+  border-color: var(--link-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  background: #ffffff;
+}
+
+.btn-toggle-pw {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.btn-toggle-pw:hover { opacity: 1; }
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.forgot-link {
+  color: var(--link-blue);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.forgot-link:hover { text-decoration: underline; }
+
+.btn-auth-submit {
+  margin-top: 10px;
+  background: var(--link-blue);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  transition: all 0.2s;
+}
+
+.btn-auth-submit:hover {
+  background: var(--link-blue-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+}
+
+.btn-secondary-close {
+  background: var(--bg-page);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary-close:hover {
+  background: #ffffff;
+  color: var(--text-main);
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Quick Prompt Presets Bar */
+.prompt-presets-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.preset-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.preset-pill {
+  background: var(--bg-page);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.preset-pill:hover {
+  background: var(--icon-blue-bg);
+  border-color: var(--link-blue);
+  color: var(--link-blue);
+}
+
+/* Navbar Right User Badge */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-page);
+  border: 1px solid var(--border-color);
+  padding: 6px 14px;
+  border-radius: 20px;
+}
+
+.user-avatar {
+  font-size: 18px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.user-role {
+  font-size: 11px;
+  color: var(--link-blue);
+  font-weight: 600;
+}
+
+.btn-logout {
+  background: var(--icon-red-bg);
+  border: 1px solid rgba(194, 85, 90, 0.2);
+  color: var(--accent-red);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-left: 6px;
+  transition: all 0.2s;
+}
+
+.btn-logout:hover {
+  background: #f87171;
+  color: #ffffff;
+}
+
+/* Main Navbar Header */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -137,7 +530,6 @@ body {
 .prompt-box {
   display: flex;
   gap: 12px;
-  margin-bottom: 24px;
 }
 
 .input-field {
@@ -204,7 +596,7 @@ body {
 
 .u-name { color: var(--text-muted); font-size: 11px; }
 
-/* Thought Stream Terminal Console — kept dark intentionally, like a code/terminal panel on a light page */
+/* Thought Stream Terminal Console */
 .thought-console {
   background: #1c1a17;
   border: 1px solid var(--border-color);
@@ -225,7 +617,7 @@ body {
 .thought-step { color: #b39ddb; font-weight: 600; }
 .thought-title { color: #7ab8f5; }
 
-/* Code Diff Box — same dark terminal treatment */
+/* Code Diff Box */
 .code-diff-box {
   background: #1c1a17;
   border: 1px solid rgba(74, 222, 128, 0.3);

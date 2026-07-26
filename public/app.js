@@ -1,10 +1,238 @@
 /**
- * APP.JS - MultiverseOps Dynamic Frontend & Explainable AI (XAI) Controller
+ * APP.JS - MultiverseOps Dynamic Frontend & Authentication Controller
  */
+
+let currentUser = null;
+let authToken = localStorage.getItem('multiverse_auth_token') || null;
+let currentAuthTab = 'signin'; // 'signin' or 'signup'
 
 document.addEventListener('DOMContentLoaded', () => {
   renderEmptyGrid();
+  checkAuthSession();
 });
+
+// Switch between Sign In and Create Account tabs
+function switchAuthTab(tabMode) {
+  currentAuthTab = tabMode;
+  const tabBtnSignIn = document.getElementById('tabBtnSignIn');
+  const tabBtnSignUp = document.getElementById('tabBtnSignUp');
+  const quickRolesPanel = document.getElementById('quickRolesPanel');
+  const nameGroup = document.getElementById('nameGroup');
+  const signInOptions = document.getElementById('signInOptions');
+  const btnSubmit = document.getElementById('btnAuthSubmit');
+  const alertBox = document.getElementById('authAlert');
+
+  alertBox.classList.add('hidden');
+
+  if (tabMode === 'signin') {
+    tabBtnSignIn.classList.add('active');
+    tabBtnSignUp.classList.remove('active');
+    quickRolesPanel.classList.remove('hidden');
+    nameGroup.classList.add('hidden');
+    signInOptions.classList.remove('hidden');
+    btnSubmit.innerHTML = '<span>Sign In to MultiverseOps</span> <span class="btn-arrow">→</span>';
+  } else {
+    tabBtnSignUp.classList.add('active');
+    tabBtnSignIn.classList.remove('active');
+    quickRolesPanel.classList.add('hidden');
+    nameGroup.classList.remove('hidden');
+    signInOptions.classList.add('hidden');
+    btnSubmit.innerHTML = '<span>Create New Account</span> <span class="btn-arrow">→</span>';
+  }
+}
+
+// Quick select preset roles on sign in page
+function quickSelectRole(roleType) {
+  const emailInput = document.getElementById('emailInput');
+  const passwordInput = document.getElementById('passwordInput');
+  const roleSelect = document.getElementById('roleSelect');
+  const chips = document.querySelectorAll('.role-chip');
+
+  chips.forEach(c => c.classList.remove('active'));
+
+  if (roleType === 'admin') {
+    emailInput.value = 'admin@multiverse.ops';
+    passwordInput.value = 'admin123';
+    roleSelect.value = 'Enterprise Admin';
+    chips[0].classList.add('active');
+  } else if (roleType === 'auditor') {
+    emailInput.value = 'auditor@multiverse.ops';
+    passwordInput.value = 'audit123';
+    roleSelect.value = 'Security Auditor';
+    chips[1].classList.add('active');
+  } else if (roleType === 'devops') {
+    emailInput.value = 'devops@multiverse.ops';
+    passwordInput.value = 'devops123';
+    roleSelect.value = 'DevOps Engineer';
+    chips[2].classList.add('active');
+  }
+}
+
+function togglePasswordVisibility() {
+  const pwInput = document.getElementById('passwordInput');
+  pwInput.type = pwInput.type === 'password' ? 'text' : 'password';
+}
+
+function openForgotPasswordModal() {
+  document.getElementById('forgotPasswordModal').classList.remove('hidden');
+  document.getElementById('forgotAlert').classList.add('hidden');
+}
+
+function closeForgotPasswordModal() {
+  document.getElementById('forgotPasswordModal').classList.add('hidden');
+}
+
+// Fill prompt preset and trigger agent
+function fillPromptPreset(presetText) {
+  const promptInput = document.getElementById('promptInput');
+  promptInput.value = presetText;
+  executeAgent();
+}
+
+// Check session status on startup
+async function checkAuthSession() {
+  if (!authToken) {
+    showLoginScreen();
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/auth/me', {
+      headers: { 'Authorization': `Bearer ${authToken}` }
+    });
+
+    const data = await res.json();
+    if (res.ok && data.authenticated) {
+      currentUser = data.user;
+      showMainDashboard(currentUser);
+    } else {
+      localStorage.removeItem('multiverse_auth_token');
+      authToken = null;
+      showLoginScreen();
+    }
+  } catch (err) {
+    showLoginScreen();
+  }
+}
+
+// Handle Sign In / Create Account Submission
+async function handleAuthSubmit(event) {
+  event.preventDefault();
+  const name = document.getElementById('nameInput').value.trim();
+  const email = document.getElementById('emailInput').value.trim();
+  const password = document.getElementById('passwordInput').value.trim();
+  const role = document.getElementById('roleSelect').value;
+  const alertBox = document.getElementById('authAlert');
+  const btnSubmit = document.getElementById('btnAuthSubmit');
+
+  alertBox.classList.add('hidden');
+  alertBox.classList.remove('success-msg');
+  btnSubmit.disabled = true;
+  btnSubmit.innerHTML = '<span>Processing...</span>';
+
+  const endpoint = currentAuthTab === 'signin' ? '/api/auth/login' : '/api/auth/register';
+  const payload = currentAuthTab === 'signin' ? { email, password, role } : { name, email, password, role };
+
+  try {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      authToken = data.token;
+      currentUser = data.user;
+      
+      const rememberCheckbox = document.getElementById('rememberMe');
+      if (rememberCheckbox && rememberCheckbox.checked) {
+        localStorage.setItem('multiverse_auth_token', authToken);
+      }
+
+      showMainDashboard(currentUser);
+    } else {
+      alertBox.textContent = data.error || 'Authentication failed.';
+      alertBox.classList.remove('hidden');
+    }
+  } catch (err) {
+    alertBox.textContent = 'Server connection error. Please try again.';
+    alertBox.classList.remove('hidden');
+  } finally {
+    btnSubmit.disabled = false;
+    btnSubmit.innerHTML = currentAuthTab === 'signin' 
+      ? '<span>Sign In to MultiverseOps</span> <span class="btn-arrow">→</span>'
+      : '<span>Create New Account</span> <span class="btn-arrow">→</span>';
+  }
+}
+
+// Handle Forgot Password Submission
+async function handleForgotPasswordSubmit(event) {
+  event.preventDefault();
+  const email = document.getElementById('forgotEmailInput').value.trim();
+  const alertBox = document.getElementById('forgotAlert');
+  const btnSubmit = document.getElementById('btnForgotSubmit');
+
+  alertBox.classList.add('hidden');
+  btnSubmit.disabled = true;
+
+  try {
+    const res = await fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      alertBox.textContent = `✅ ${data.message} ${data.instruction || ''}`;
+      alertBox.classList.add('success-msg');
+      alertBox.classList.remove('hidden');
+    } else {
+      alertBox.textContent = data.error || 'Failed to request reset.';
+      alertBox.classList.remove('hidden');
+    }
+  } catch (err) {
+    alertBox.textContent = 'Server error during password reset.';
+    alertBox.classList.remove('hidden');
+  } finally {
+    btnSubmit.disabled = false;
+  }
+}
+
+// Handle Logout
+async function handleLogout() {
+  if (authToken) {
+    fetch('/api/auth/logout', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${authToken}` }
+    }).catch(() => {});
+  }
+
+  localStorage.removeItem('multiverse_auth_token');
+  authToken = null;
+  currentUser = null;
+
+  showLoginScreen();
+}
+
+function showLoginScreen() {
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('mainDashboard').classList.add('hidden');
+}
+
+function showMainDashboard(user) {
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('mainDashboard').classList.remove('hidden');
+
+  if (user) {
+    document.getElementById('userAvatar').textContent = user.avatar || '👑';
+    document.getElementById('userName').textContent = user.name || 'Enterprise Admin';
+    document.getElementById('userRole').textContent = user.role || 'Enterprise Admin';
+  }
+}
 
 function renderEmptyGrid() {
   const grid = document.getElementById('universeGrid');
@@ -35,6 +263,9 @@ async function executeAgent() {
 
   thoughtConsole.innerHTML = `
     <div class="thought-entry">
+      <span class="thought-step">[AUTHENTICATED]</span> Session Token Verified as <strong>${currentUser ? currentUser.role : 'Authenticated User'}</strong>.
+    </div>
+    <div class="thought-entry">
       <span class="thought-step">[PHASE 1]</span> <span class="thought-title">Explainable AI Intent Analysis:</span> Analyzing prompt for threat vectors: "${promptInput}"
     </div>
     <div class="thought-entry">
@@ -48,11 +279,18 @@ async function executeAgent() {
   try {
     const res = await fetch('/api/multiverse/process', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken || 'demo_token'}`
+      },
       body: JSON.stringify({ prompt: promptInput })
     });
 
     const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Server processing error');
+    }
 
     // Display Direct LLM Answer
     directAnswerBox.innerHTML = `
